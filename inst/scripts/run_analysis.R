@@ -17,11 +17,11 @@ scenarios <- tidyr::expand_grid(
     theta = c("<1%", "15%"),
     k = c(30, 1.95)
   )),
-  index_R0 = c(1.5, 2.5),
+  index_R0 = c(1.1, 1.5),
   quarantine = FALSE,
   prop.asym = c(0, 0.1),
   control_effectiveness = seq(0, 1, 0.2),
-  num.initial.cases = c(5, 20)) %>%
+  num.initial.cases = c(5, 10)) %>%
   tidyr::unnest("k_group") %>%
   tidyr::unnest("delay_group") %>%
   dplyr::mutate(scenario = 1:dplyr::n())
@@ -42,8 +42,13 @@ future::plan("multisession")
 scenarios <- as.data.table(scenarios)
 
 ## Run paramter sweep
-sweep_results <- ringbp::parameter_sweep(scenarios,
-                                         sim_fn = sim_with_params,
-                                         samples = 2)
+run_time <- system.time(
+  sweep_results <- ringbp::parameter_sweep(
+    scenarios,
+    sim_fn = sim_with_params,
+    samples = 100
+  )
+)
+
 
 saveRDS(sweep_results, file = file.path("inst", "extdata", "simulations.rds"))
