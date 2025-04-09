@@ -1,0 +1,3 @@
+Repository for the analysis code ...
+
+To compile the paper from \LaTex (`main.tex`) change the working directory to `inst/paper/` and run `tinytex::latexmk("main.tex")` in the R console.
