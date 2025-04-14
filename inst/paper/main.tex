@@ -46,7 +46,7 @@ In this study we evaluate the effectiveness of controlling infectious disease ou
 
 \subsection*{Branching process model with isolation}
 
-To assess the efficaciousness of contact tracing and isolation to control an outbreak of pandemic-potential influenza we used an individual-level transmision model implemented in the R package \texttt{{ringbp}} \citep{hellewellRingbpSimulateEvaluate2025}. The epidemic simulation model uses a single-type branching process with a negative binomial offspring distribution to simulate the spread of a pathogen through a population (without depletion of susceptibility). The mean of the negative binomial offspring distribution is the basic reproduction number, and this distribution allows the model to be parameterised to capture overdispersion of transmission, in other words, some infectors are superspreaders and infect a disproportionate number of individuals \citep{lloyd-smithSuperspreadingEffectIndividual2005, kucharskiEarlyDynamicsTransmission2020}. \\
+To assess the efficacy of contact tracing and isolation to control an outbreak of pandemic-potential influenza we used an individual-level transmision model implemented in the R package \texttt{\{ringbp\}} \citep{hellewellRingbpSimulateEvaluate2025}. The epidemic simulation model uses a single-type branching process with a negative binomial offspring distribution to simulate the spread of a pathogen through a population (without depletion of susceptibility). The mean of the negative binomial offspring distribution is the basic reproduction number, and this distribution allows the model to be parameterised to capture overdispersion of transmission, in other words, some infectors are superspreaders and infect a disproportionate number of individuals \citep{lloyd-smithSuperspreadingEffectIndividual2005, kucharskiEarlyDynamicsTransmission2020}. \\
 
 The NPI implemented in the transmission model is an isolation of symptomatic cases. The timing of isolation is drawn from the onset-to-isolation distribution (see \nameref{epiparameters} section for parameterisation). All infection times that are sampled to occur after the isolation of an infector are not infected. Therefore, the isolation of a case can reduce the number of secondary cases if isolation happens prior to any of the secondary infection times. \\
 
@@ -64,16 +64,7 @@ We extracted incubation periods from the epidemiological literature that have be
 
 The reproduction number ($R$) use to simulate transmission for each influenza subtype was 1.1, 1.5 and 2.0. We chose these values and they represent either similar values to previously estimated $R$ values for influenza outbreaks \citep{fergusonStrategiesMitigatingInfluenza2006}, including H1N1 \citep{fraserPandemicPotentialStrain2009}, or they represent an inflated values of current estimates of H5N1 and H7N9 subtypes to evaluate the effectiveness of contact tracing and isolation in the event that pathogen evolution (e.g. recombination of subtypes (ref)) enhances the human-to-human transmissibility of these pathogens. Current estimates for H5N1 and H7N9 subtypes are below unity (i.e. $R < 1$) (\citealt{tannerPandemicPotentialAvian2015}; \citealt{Ward2024.12.11.24318702}, but see \citealt{yangDetectingHumanhumanTransmission2007a} for a H5N1 $R$ estimate above 1) so transmission is expected to stop without intervention (except in a extremely rare case of superspreading event). Therefore evaluating contact tracing and isolation requires simulating outbreaks that are likely to exponentially spread without control measures.
 
-\begin{itemize}
-
-\item H1N1-like
-\item H5N1 (slightly increased reproduction number, R~1)
-\item H7N9 (if parameters are available)
-
-\end{itemize}
-
-Figure for parameter space for flu-like pandemic
-
+<Insert Figure for parameter space for flu-like pandemic>
 
 \begin{figure}[ht]
 \centering
@@ -81,6 +72,14 @@ Figure for parameter space for flu-like pandemic
 \caption{Incubation period for the Influenza subtypes: H1N1, H5N1 and H7N9.}
 \label{fig:incub}
 \end{figure}
+
+\clearpage
+
+\subsection*{Simulation scenarios}
+
+To assess under what scenarios pandemic-potential influenza outbreaks could be contained with the use of contact tracing and isolation we set up a simulation experiment. We defined a parameter space to explore across a variety of epidemiological characteristics (as defined in \nameref{epiparameters} section), contact tracing effectiveness, proportion of aysmptomatic cases and presymptomatic transmissin, and number of initial cases. \\
+
+The onset-to-isolation delay distribution determines the time between a case developing symptoms and then becoming isolated. We assume that an isolated case cannot transmit, so isolation is assumed to be 100\% effective once enacted ($R_{isolated} = 0$). The onset-to-isolation delay is parameterised with two scenarios: a short, SARS-like, delay (Donnelly et al.) and a longer COVID-19-like delay (Li et al.) (Figure \ref{fig:onset-to-isolation}). Both onset-to-isolation delays are parameterised as Weibull distributions, the SARS-like distribution has shape ($\lambda$) 1.65 and scale ($k$) 4.29 (mean = 3.83 days, SD = 2.38 days), the COVID-like distribution has shape = 2.31 and scale = 9.48 (mean = 8.40, SD = 3.87 days) (Figure \ref{fig:onset-to-isolation}). These two empirically informed delay distributions provide a guide to possible response times in the case of an influenza outbreak and will enable us to evaluate if such delays are too long to contain a disease that can transmit rapidly such as influenza. \\
 
 \begin{figure}[ht]
 \centering
@@ -90,6 +89,11 @@ Figure for parameter space for flu-like pandemic
 \label{fig:onset-to-isolation}
 \end{figure}
 
+\clearpage
+
+We define the proportion of pre-symptomatic transmission follwowing the approach of \cite{hellewellFeasibilityControllingCOVID192020} by parameterising a skewed-normal distribution to sample the infection times using the incubation period and a skew parameter ($\theta$). The skew parameter controls the proportion of pre-symptomatic transmission by modulating the proportion of tranmission times that are less than the incubation time (Figure \ref{fig:prop-presym-trans}). We parameterised the skew-normal distribution with a skew of 0.7, 1.95 and 30, these correspond to a pre-symptomatic transmission percentage of 30\%, 15\% and $<1\%$, respectively. Therefore, in all scenarios most transmission occurs after symptom onset, but due to isolation only impacting symptomatic individuals the greater proportion of transmission that occurs before symptom onset, the less effective contact tracing is hypothesied to be. \\
+
+The proportion of asymptomatic infections is assumes to be rare, so we test scenarios with zero asymptomatic tranmission and another with 10\% of cases being asymptomatic. \\
 
 \begin{figure}[ht]
 \centering
@@ -98,17 +102,21 @@ Figure for parameter space for flu-like pandemic
 \label{fig:prop-presym-trans}
 \end{figure}
 
-We extract the incubation period or serial interval for each influenza subtype. We define the proportion of pre-symptomatic transmission as ... We define the onset-to-isolation delay distribution as short or long following the approach from \cite{hellewellFeasibilityControllingCOVID192020}.
+\clearpage
 
-\subsection*{Simulation scenarios}
+We simulated scenarios with either 5, 20 or 40 initial cases. This is to test whether contact tracing can contain outbreaks that may have already accumulated cases before contact tracing is started, or represents importation of multiple cases in a single event, such as a flight with multiple infectors (Khanh et al. 2020). \\
 
-We simulated scenarios with either 5 or 10 initial cases.
+Some parameters we fixed across all simulations. The dispersion parameter for the negative binomial offspring distribution was fixed at 1 for isolated cases, 0.16 for subclinical and community cases. For computational efficiency we capped the maximum number of days the simulation could run for to 365. This is substantially longer than the 12-16 week window for evaluating outbreak control so does not influence the results. Additionally, we limit simulations to 500 cases. This is an arbitrary threshold we judge to be large epidemic that is not controllable. \\
 
 \section*{Results}
 
-The incubation period for H1N1 is noticable shorter than the other two subtypes, which are similar, with H5N1 having a slightly longer median (Figure \ref{fig:incub}).
+The incubation period for H1N1 is noticable shorter than the other two subtypes (H5N1 and H7N9), which are similar, with H5N1 having a slightly longer median (Figure \ref{fig:incub}). \\
 
-Predictably, a higher reproduction number for the outbreak results in a smaller percentage of outbreaks controlled at a given percentage of control effectiveness. (Figure \ref{fig:prop-outbreak-control-R}). The disparity of percentage outbreaks controlled becomes zero as the percentage of contacts traced exceeds 80\% (Figure \ref{fig:prop-outbreak-control-R}). When $R$ is only slightly above unity but below 2, the percentage of outbreaks controlled at 50\% of contacts traced and isolated is over 90\%, highlighting the effectiveness of this intervention for infectious diseases are not highly transmissible between humans.
+Predictably, the ability to control an influenza epidemic is highly dependent on the reproduction number. A higher outbreak reproduction number results in a smaller percentage of outbreaks controlled at a given percentage of control effectiveness. (Figure \ref{fig:prop-outbreak-control-R}). There is a substantial difference between outbreaks with a $R$ slightly above unity ($R = 1.1$) which were controlled at a low levels ($\geq 20\%$) of contact tracing and isolation for all three influenza subtypes (Figure \ref{fig:prop-outbreak-control-R}). As $R$ increases to 1.5 there is a dramatic decline in the ability to control the epidemic without isolation of traced contacts (i.e. 0\% control effectiveness), however, outbreaks with $R = 1.5$ are mostly contained once control effectiveness exceeds 50\% (Figure \ref{fig:prop-outbreak-control-R}. Once the reproduction number is at 2.5 or 3.5, an outbreak is only controlled in at least 50\% of scenarios with contact tracing and isolation at greater than 60\% (Figure \ref{fig:prop-outbreak-control-R}). \\
+
+The incubation period influences the efficacy of tracing and isolation. This effect is most pronounced when the percentage of outbreaks controlled is greater than 0\% and less than 100\% (i.e. not at the boundary) (Figure \ref{fig:prop-outbreak-control-R}). The shortest incubation period, H1N1, predominantly the least controllable for a given reproduction number, showing that infections that are symptomatic shortly after infection limit our ability to effectively tracing and isolate their potential infectees in time to prevent disease transmission. The difficulty to control an pandemic outbreak with a short incubation period is shown by the $\sim 40\%$ of simulated H1N1 outbreaks with 100\% control effectiveness that were not contained when $R = 3.5$, while longer incubation period outbreaks have $>80\%$ controlled when 100\% of contacts are traced and isolated (Figure \ref{fig:prop-outbreak-control-R}). Overall, both the transmissibility and incubation period impact the feasibility to control an outbreak. \\
+
+The variance between the influenza subtypes at each percentage of contacts traced and isolated varies (i.e. difference between circle, triangle and square points at each contacts traced \% in Figure \ref{fig:prop-outbreak-control-R}). This variance is greatest at intermediate (20\% - 80\%) contact tracing effectiveness and intermediate values of $R$ (1.5 and 2.5) (Figure \ref{fig:prop-outbreak-control-R}). This could indicate a substantive role for incubation period durartion in the control of disease transmission. However, this variance in proportion of outbreaks controlled between pathogen subtypes does not show a strong pattern across all scenarios simulated (Figure \ref{fig:prop-outbreak-control-var-R}). There is a weak pattern of increased variance in controllability between subtypes at intermediate values of $R$, overall it seems that incubation period causes differences in control-by-isolation effectivness when not at the boundary of epidemic controllability. In other words, differences between influenza subtypes arise when not in a situation of high transmissibility and low contact tracing effectivness that cannot contain any outbreaks, nor low transmissibility and high contact tracing effectivenss easily contain all outbreaks (Figure \ref{fig:prop-outbreak-control-var-R}). \\
 
 \begin{figure}[ht]
 \centering
@@ -117,12 +125,18 @@ Predictably, a higher reproduction number for the outbreak results in a smaller 
 \label{fig:prop-outbreak-control-R}
 \end{figure}
 
+\clearpage
+
+The ability to control an epidemic that can readily transmit human-to-human is moderated by the initial number of infectious individuals that seed the outbreak. The higher the number of cases the less chance that stochastic extinction of a transmission chain will end the whole epidemic. For an influenza pandemic, the number of initial infected individuals influences efficacy of control-by-isolation at all transmissibility scenarios evaluated ($R \in \{1.1, 1.5, 2.5, 3.5\}$, Figure \ref{fig:prop-outbreak-control-num-init-cases}). When $R = 1.1$ most outbreaks can be controlled without contact tracing and isolation, even with 40 initial infectors Figure \ref{fig:prop-outbreak-control-num-init-cases}). When $R = 1.5$ the increase in the number of initial infections from 5 to 20 has a large decrease in outbreaks controlled at low levels of contact tracing, the same pattern when the number of initial infectors is twofold larger at 40, but these differences in outbreak control diminish as contact tracing increases towards 100\% (Figure \ref{fig:prop-outbreak-control-num-init-cases}). When the number of cases seeding the outbreak is $>20$ at $R>2.5$ a large proportion of outbreaks become uncontrollable until contact tracing reaches $>60\%$. In the worst case transmissibility scenario ($R = 3.5$) if contact tracing is not activated until at least 20 individuals are infected then close to 100\% of contacts with need to be traced in order to control the majority of outbreaks (Figure \ref{fig:prop-outbreak-control-num-init-cases}).  \\
+
 \begin{figure}[ht]
 \centering
 \includegraphics[width=\textwidth]{../plots/prop_outbreak_control_num_init_cases.png}
 \caption{The percentage of outbreaks controlled across values of contact and isolation effectiveness, for outbreaks with an initial number of seeding infections assumed to be either 5 or 10. This is for a baselines scenario where the reproduction number is 1.5, the proportion of presymptomatic transmission is 15\%, all cases are assumed symptomatic, and the onset-to-isolation delay is assumed to be SARS-like.}
 \label{fig:prop-outbreak-control-num-init-cases}
 \end{figure}
+
+\clearpage
 
 \begin{figure}[ht]
 \centering
@@ -135,6 +149,7 @@ Predictably, a higher reproduction number for the outbreak results in a smaller 
 
 \begin{itemize}
 \item This study has looked at the feasibility and effectiveness of contact tracing and isolation for influenza subtypes that have cause epidemic outbreaks.
+\item Outbreaks controlled at 50\% of contacts traced and isolated is over ??\%, highlighting the effectiveness of this intervention for infectious diseases are not highly transmissible between humans.
 \item Discuss the existing flu vaccines and antivirals that can be used an interventions in addition to NPIs
 \item In modelling the effectiveness of contact tracing and isolation we have assumed that there is no capacity limits on contact tracing, which does not hold in large outbreaks such as SARS-CoV-2 (ref). We also ignore potential socio-political factors that would prevent health worker from visiting or contacting infected individuals or contacts of infected individuals (Dhillon and Kelly, 2018). We also did not consider zoonotic spillover infections or formite transmission.
 \item Digital tracing has capacity for large-scale contact tracing (pingdemic), also rapid tests are a complementary approach for limiting spread.
@@ -144,5 +159,20 @@ Predictably, a higher reproduction number for the outbreak results in a smaller 
 
 \bibliographystyle{plainnat}
 \bibliography{FluTracer.bib}
+
+\clearpage
+
+\section*{Supplementary Material}
+
+\setcounter{figure}{0}
+\renewcommand{\thefigure}{S\arabic{figure}}
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{../plots/prop_outbreak_control_var_reproduction_number.png}
+\caption{The standard deviation of the percentage of outbreaks controlled between influenza subtypes (H1N1, H5N1, H7N9), across percentages of contacts traced. Points are jittered horizontally reduce overlap.}
+\label{fig:prop-outbreak-control-var-R}
+\end{figure}
 
 \end{document}
