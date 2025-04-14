@@ -1,5 +1,6 @@
 library(data.table)
 library(ggplot2)
+library(dplyr)
 
 # read simulation results saved by running inst/scripts/run_analysis.R
 sweep_results <- readRDS(file.path("inst", "extdata", "simulations.rds"))
@@ -15,7 +16,7 @@ dt_data <- cbind(dt_data, scenario = dt$scenario, pext = dt$pext)
 
 prop_outbreak_control <- dt_data[
   num.initial.cases == 10 & theta == "15%" & delay == "SARS" & prop.asym == 0,
-  .(control_effectiveness, index_R0, pext)
+  .(control_effectiveness, index_R0, pext, subtype)
 ]
 
 # convert to percentages for plotting
@@ -27,19 +28,20 @@ prop_outbreak_control_plot <- ggplot2::ggplot(data = prop_outbreak_control) +
     mapping = ggplot2::aes(
       x = control_effectiveness,
       y = pext,
-      colour = as.factor(index_R0)
+      colour = as.factor(index_R0),
+      linetype = as.factor(subtype)
     ),
-    size = 0.75
+    linewidth = 0.75
   ) +
   ggplot2::geom_point(
     mapping = ggplot2::aes(
       x = control_effectiveness,
       y = pext,
-      fill = as.factor(index_R0)
+      fill = as.factor(index_R0),
+      shape = as.factor(subtype)
     ),
-    shape = 21,
     size = 3,
-    colour = "black"
+    stroke = 0.75
   ) +
   ggplot2::scale_x_continuous(
     name = "Contacts traced (%)",
@@ -51,12 +53,23 @@ prop_outbreak_control_plot <- ggplot2::ggplot(data = prop_outbreak_control) +
   ) +
   ggplot2::scale_colour_manual(values = c("#f4b301", "#db1048")) +
   ggplot2::scale_fill_manual(values = c("#f4b301", "#db1048")) +
+  ggplot2::scale_shape_manual(values = c(21, 22, 24)) +
   ggplot2::labs(
     colour = "Reproduction Number (R)",
-    fill = "Reproduction Number (R)"
+    fill = "Reproduction Number (R)",
+    shape = "Pathogen Subtype",
+    linetype = "Pathogen Subtype"
+  ) +
+  ggplot2::guides(
+    fill = ggplot2::guide_legend(
+      override.aes = list(shape = 21)
+    )
   ) +
   ggplot2::theme_bw() +
-  ggplot2::theme(legend.position = "bottom")
+  ggplot2::theme(
+    legend.position = "bottom",
+    legend.box="vertical"
+  )
 
 ggplot2::ggsave(
   file.path("inst", "plots", "prop_outbreak_control_reproduction_number.png"),

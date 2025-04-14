@@ -14,36 +14,35 @@ dt <- as.data.table(res)
 dt_data <- rbindlist(dt$data)
 dt_data <- cbind(dt_data, scenario = dt$scenario, pext = dt$pext)
 
-prop_outbreak_control_num_init_cases <- dt_data[
-  index_R0 == 1.5 & theta == "15%" & delay == "SARS" & prop.asym == 0,
-  .(control_effectiveness, num.initial.cases, pext, subtype)
+prop_outbreak_control_onset_to_isolation <- dt_data[
+  num.initial.cases == 10 & theta == "15%" & index_R0 == 1.5 & prop.asym == 0,
+  .(control_effectiveness, onset_to_isolation, delay, pext, subtype)
 ]
 
 # convert to percentages for plotting
-prop_outbreak_control_num_init_cases[, control_effectiveness := control_effectiveness * 100]
-prop_outbreak_control_num_init_cases[, pext := pext * 100]
+prop_outbreak_control_onset_to_isolation[, control_effectiveness := control_effectiveness * 100]
+prop_outbreak_control_onset_to_isolation[, pext := pext * 100]
 
-prop_outbreak_control_num_init_cases_plot <- ggplot2::ggplot(
-  data = prop_outbreak_control_num_init_cases
+prop_outbreak_control_onset_to_isolation_plot <- ggplot2::ggplot(
+  data = prop_outbreak_control_onset_to_isolation
 ) +
   ggplot2::geom_point(
     mapping = ggplot2::aes(
       x = control_effectiveness,
       y = pext,
-      fill = as.factor(num.initial.cases),
+      fill = as.factor(delay),
       shape = as.factor(subtype)
     ),
-    size = 3,
-    stroke = 0.75
+    size = 3
   ) +
   ggplot2::geom_line(
     mapping = ggplot2::aes(
       x = control_effectiveness,
       y = pext,
-      colour = as.factor(num.initial.cases),
+      colour = as.factor(delay),
       linetype = as.factor(subtype)
     ),
-    size = 0.75
+    linewidth = 0.75
   ) +
   ggplot2::scale_x_continuous(
     name = "Contacts traced (%)",
@@ -53,12 +52,12 @@ prop_outbreak_control_num_init_cases_plot <- ggplot2::ggplot(
     name = "Simulated outbreaks controlled (%)",
     limits = c(0, 100)
   ) +
-  ggplot2::scale_colour_manual(values = c("#ffbe6a", "#40b0a7")) +
-  ggplot2::scale_fill_manual(values = c("#ffbe6a", "#40b0a7")) +
+  ggplot2::scale_colour_manual(values = c("#10559a", "#db4c77")) +
+  ggplot2::scale_fill_manual(values = c("#10559a", "#db4c77")) +
   ggplot2::scale_shape_manual(values = c(21, 22, 24)) +
   ggplot2::labs(
-    colour = "Number of initial cases",
-    fill = "Number of initial cases",
+    colour = "Onset-to-isolation",
+    fill = "Onset-to-isolation",
     shape = "Pathogen Subtype",
     linetype = "Pathogen Subtype"
   ) +
@@ -70,8 +69,8 @@ prop_outbreak_control_num_init_cases_plot <- ggplot2::ggplot(
   ggplot2::theme_bw()
 
 ggplot2::ggsave(
-  file.path("inst", "plots", "prop_outbreak_control_num_init_cases.png"),
-  plot = prop_outbreak_control_num_init_cases_plot,
+  file.path("inst", "plots", "prop_outbreak_control_onset_to_isolation.png"),
+  plot = prop_outbreak_control_onset_to_isolation_plot,
   device = "png",
   width = 150,
   height = 150,
