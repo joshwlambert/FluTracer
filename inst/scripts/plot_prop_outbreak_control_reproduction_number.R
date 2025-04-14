@@ -7,7 +7,7 @@ sweep_results <- readRDS(file.path("inst", "extdata", "simulations.rds"))
 
 res <- sweep_results %>%
   group_by(scenario) %>%
-  mutate(pext = ringbp::extinct_prob(sims[[1]], cap_cases = 5000)) %>%
+  mutate(pext = ringbp::extinct_prob(sims[[1]], cap_cases = 500)) %>%
   ungroup(scenario)
 
 dt <- as.data.table(res)
@@ -15,7 +15,7 @@ dt_data <- rbindlist(dt$data)
 dt_data <- cbind(dt_data, scenario = dt$scenario, pext = dt$pext)
 
 prop_outbreak_control <- dt_data[
-  num.initial.cases == 10 & theta == "15%" & delay == "SARS" & prop.asym == 0,
+  num.initial.cases == 20 & theta == "15%" & delay == "SARS" & prop.asym == 0,
   .(control_effectiveness, index_R0, pext, subtype)
 ]
 
@@ -51,9 +51,10 @@ prop_outbreak_control_plot <- ggplot2::ggplot(data = prop_outbreak_control) +
     name = "Simulated outbreaks controlled (%)",
     limits = c(0, 100)
   ) +
-  ggplot2::scale_colour_manual(values = c("#f4b301", "#db1048")) +
-  ggplot2::scale_fill_manual(values = c("#f4b301", "#db1048")) +
+  ggplot2::scale_color_brewer(palette = "RdBu", direction = -1) +
+  ggplot2::scale_fill_brewer(palette = "RdBu", direction = -1) +
   ggplot2::scale_shape_manual(values = c(21, 22, 24)) +
+  ggplot2::scale_linetype_manual(values = c(1, 1, 1)) +
   ggplot2::labs(
     colour = "Reproduction Number (R)",
     fill = "Reproduction Number (R)",

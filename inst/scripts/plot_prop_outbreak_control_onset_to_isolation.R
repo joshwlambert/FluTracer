@@ -7,7 +7,7 @@ sweep_results <- readRDS(file.path("inst", "extdata", "simulations.rds"))
 
 res <- sweep_results %>%
   group_by(scenario) %>%
-  mutate(pext = ringbp::extinct_prob(sims[[1]], cap_cases = 5000)) %>%
+  mutate(pext = ringbp::extinct_prob(sims[[1]], cap_cases = 500)) %>%
   ungroup(scenario)
 
 dt <- as.data.table(res)
@@ -15,7 +15,7 @@ dt_data <- rbindlist(dt$data)
 dt_data <- cbind(dt_data, scenario = dt$scenario, pext = dt$pext)
 
 prop_outbreak_control_onset_to_isolation <- dt_data[
-  num.initial.cases == 10 & theta == "15%" & index_R0 == 1.5 & prop.asym == 0,
+  num.initial.cases == 20 & theta == "15%" & index_R0 == 1.5 & prop.asym == 0,
   .(control_effectiveness, onset_to_isolation, delay, pext, subtype)
 ]
 
@@ -52,9 +52,10 @@ prop_outbreak_control_onset_to_isolation_plot <- ggplot2::ggplot(
     name = "Simulated outbreaks controlled (%)",
     limits = c(0, 100)
   ) +
-  ggplot2::scale_colour_manual(values = c("#10559a", "#db4c77")) +
-  ggplot2::scale_fill_manual(values = c("#10559a", "#db4c77")) +
+  ggplot2::scale_colour_manual(values = c("#92C5DE", "#F4A582")) +
+  ggplot2::scale_fill_manual(values = c("#92C5DE", "#F4A582")) +
   ggplot2::scale_shape_manual(values = c(21, 22, 24)) +
+  ggplot2::scale_linetype_manual(values = c(1, 1, 1)) +
   ggplot2::labs(
     colour = "Onset-to-isolation",
     fill = "Onset-to-isolation",
