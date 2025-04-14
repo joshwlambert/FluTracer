@@ -22,8 +22,8 @@ scenarios <- data.table(
       )
     )),
     k_group = list(data.table(
-      theta = c("<1%", "15%"),
-      k = c(30, 1.95)
+      theta = c("<1%", "15%", "30%"),
+      k = c(30, 1.95, 0.7)
     )),
     incubation_period_group = list(data.table(
       subtype = c("H1N1", "H5N1", "H7N9"),
@@ -41,10 +41,10 @@ scenarios <- data.table(
         )
       )
     )),
-    index_R0 = c(1.1, 1.5),
+    index_R0 = c(1.1, 1.5, 2.5, 3.5),
     prop.asym = c(0, 0.1),
     control_effectiveness = seq(0, 1, 0.2),
-    num.initial.cases = c(5, 10),
+    num.initial.cases = c(5, 20, 40),
     quarantine = FALSE
   )
 )
@@ -77,7 +77,7 @@ sim_with_params <- purrr::partial(
 
 # Set up multicore if using see ?future::plan for details
 # Use the workers argument to control the number of cores used.
-# future::plan("multisession")
+future::plan("multisession", workers = 8)
 
 # Run parameter sweep
 sweep_results <- ringbp::parameter_sweep(
