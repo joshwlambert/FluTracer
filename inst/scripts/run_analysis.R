@@ -18,7 +18,8 @@ scenarios <- data.table(
       delay = c("SARS", "Wuhan"),
       onset_to_isolation = c(
         \(x) stats::rweibull(n = x, shape = 1.651524, scale = 4.287786),
-        \(x) stats::rweibull(n = x, shape = 2.305172, scale = 9.483875)
+        \(x) stats::rweibull(n = x, shape = 2.305172, scale = 9.483875),
+        \(x) stats::rexp(n = x, rate = 0.5)
       )
     )),
     k_group = list(data.table(
@@ -64,7 +65,7 @@ scenarios <- merge(
 )
 scenarios[, scenario :=  1:.N]
 
-# Parameterise fixed paramters
+# Parameterise fixed parameters
 sim_with_params <- purrr::partial(
   ringbp::scenario_sim,
   cap_max_days = 365,
