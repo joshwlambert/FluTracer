@@ -12,6 +12,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[round]{natbib}
 \usepackage{nameref}
+\usepackage{tikz}
 
 \title{Evaluating contact tracing and isolation to control pandemic potential influenza outbreaks}
 \author{Joshua W. Lambert}
@@ -64,7 +65,126 @@ We extracted incubation periods from the epidemiological literature that have be
 
 The reproduction number ($R$) use to simulate transmission for each influenza subtype was 1.1, 1.5, 2.5 and 3.5. We chose these values and they represent either similar values to previously estimated $R$ values for influenza outbreaks \citep{fergusonStrategiesMitigatingInfluenza2006}, including H1N1 \citep{fraserPandemicPotentialStrain2009, lesslerOutbreak2009Pandemic2009}, or they represent an inflated values of current estimates of H5N1 and H7N9 subtypes to evaluate the effectiveness of contact tracing and isolation in the event that pathogen evolution (e.g. genetic reassortment (Peacock et al., 2025) or mutations in receptor binding preference (Lin et al., 2024)) enhances the human-to-human transmissibility of these pathogens. Current estimates for H5N1 and H7N9 subtypes are below unity (i.e. $R < 1$) (\citealt{tannerPandemicPotentialAvian2015}; \citealt{Ward2024.12.11.24318702}, but see \citealt{yangDetectingHumanhumanTransmission2007a} for a H5N1 $R$ estimate above 1) so transmission is expected to stop without intervention (except in a extremely rare case of superspreading event). Therefore evaluating contact tracing and isolation requires simulating outbreaks that are likely to exponentially spread without control measures.
 
-<Insert Figure for ringbp schematic>
+\begin{figure}[ht]
+\centering
+{\sffamily
+  \begin{tikzpicture}[every node/.style={font=\tiny}]
+  % Labels above the A row
+  \node at (0,0.5) {Infected};
+  \node at (2,0.5) {Symptomatic};
+  \node at (5,0.5) {Isolated};
+
+  % Top row: A circles with red background
+  \fill[red!30] (0,0) circle (5pt);
+  \draw (0,0) circle (5pt);
+  \node at (0,0) {A};
+
+  \fill[red!30] (2,0) circle (5pt);
+  \draw (2,0) circle (5pt);
+  \node at (2,0) {A};
+
+  \fill[red!30] (5,0) circle (5pt);
+  \draw (5,0) circle (5pt);
+  \node at (5,0) {A};
+
+  % Horizontal line between A circles
+  \draw (0,0) -- (2,0);
+  \draw (2,0) -- (5,0);
+
+  % Individual A delays
+  \draw[<->] (0.5,-0.3) -- (1.5,-0.3);
+  \node at (1,-0.5) {Incubation period};
+  \draw[<->] (2,-0.3) -- (5,-0.3);
+  \node at (3.5,-0.5) {Onset-to-isolation};
+
+  % Labels above the B row
+  \node at (4,-1.5) {Infected};
+  \node at (6,-1.5) {Symptomatic};
+  \node at (8,-1.5) {Isolated};
+
+  % Middle row: B circles with blue background
+  \fill[blue!30] (4,-2) circle (5pt);
+  \draw (4,-2) circle (5pt);
+  \node at (4,-2) {B};
+
+  \fill[blue!30] (6,-2) circle (5pt);
+  \draw (6,-2) circle (5pt);
+  \node at (6,-2) {B};
+
+  \fill[blue!30] (8,-2) circle (5pt);
+  \draw (8,-2) circle (5pt);
+  \node at (8,-2) {B};
+
+  % Horizontal line between B circles
+  \draw (4,-2) -- (6,-2);
+  \draw (6,-2) -- (8,-2);
+
+  % Labels above the C row
+  \node at (4.5,-3.5) {Infected};
+  \node at (7.5,-3.5) {Symptomatic};
+  \node at (9,-3.5) {Isolated};
+
+  % Bottom row: C circles with green background
+  \fill[green!30] (4.5,-4) circle (5pt);
+  \draw (4.5,-4) circle (5pt);
+  \node at (4.5,-4) {C};
+
+  \fill[green!30] (7.5,-4) circle (5pt);
+  \draw (7.5,-4) circle (5pt);
+  \node at (7.5,-4) {C};
+
+  \fill[green!30] (9,-4) circle (5pt);
+  \draw (9,-4) circle (5pt);
+  \node at (9,-4) {C};
+
+  % Horizontal line between C circles
+  \draw (4.5,-4) -- (7.5,-4);
+  \draw (7.5,-4) -- (9,-4);
+
+  % Labels above the D row
+  \node at (8,-5.5) {Infected};
+
+  % Individual C circles with green background
+  \fill[teal!30] (8,-6) circle (5pt);
+  \draw (8,-6) circle (5pt);
+  \node at (8,-6) {D};
+
+  % arrow for asymptomatic D individual
+  \draw[->] (8,-6) -- (11,-6); % arrow for asymptomatic
+
+  % Labels above the C row
+  \node at (8.75,-7.5) {Infected};
+  \node at (10,-7.5) {Symptomatic};
+  \node at (11,-7.5) {Isolated};
+
+  % E individual
+  \fill[violet!30] (8.75,-8) circle (5pt);
+  \draw (8.75,-8) circle (5pt);
+  \node at (8.75,-8) {E};
+
+  \fill[violet!30] (10,-8) circle (5pt);
+  \draw (10,-8) circle (5pt);
+  \node at (10,-8) {E};
+
+  \fill[violet!30] (11,-8) circle (5pt);
+  \draw (11,-8) circle (5pt);
+  \node at (11,-8) {E};
+
+  % Horizontal line between E circles
+  \draw (8.75,-8) -- (10,-8);
+  \draw (10,-8) -- (11,-8);
+
+  % Vertical dashed lines
+  \draw[dashed] (4,0) -- (4,-2);   % A to B
+  \draw[dashed] (4.5,-2) -- (4.5,-4);  % B to C
+  \draw[dashed] (8,-4) -- (8,-6);  % C to D
+  \draw[dashed] (8.75,-4) -- (8.75,-8);  % C to E
+
+  \end{tikzpicture}
+}
+\caption{A schematic of the branching process model with isolation.}
+\label{fig:ringbp-model}
+\end{figure}
 
 \begin{figure}[ht]
 \centering
@@ -86,13 +206,14 @@ The reproduction number ($R$) use to simulate transmission for each influenza su
 
 To assess under what scenarios pandemic-potential influenza outbreaks could be contained with the use of contact tracing and isolation we set up a simulation experiment. We defined a parameter space to explore across a variety of epidemiological characteristics (as defined in \nameref{epiparameters} section), contact tracing effectiveness, proportion of aysmptomatic cases and presymptomatic transmissin, and number of initial cases. \\
 
-The onset-to-isolation delay distribution determines the time between a case developing symptoms and then becoming isolated. We assume that an isolated case cannot transmit, so isolation is assumed to be 100\% effective once enacted ($R_{isolated} = 0$). The onset-to-isolation delay is parameterised with two scenarios: a short, SARS-like, delay (Donnelly et al.) and a longer COVID-19-like delay (Li et al.) (Figure \ref{fig:onset-to-isolation}). Both onset-to-isolation delays are parameterised as Weibull distributions, the SARS-like distribution has shape ($\lambda$) 1.65 and scale ($k$) 4.29 (mean = 3.83 days, SD = 2.38 days), the COVID-like distribution has shape = 2.31 and scale = 9.48 (mean = 8.40, SD = 3.87 days) (Figure \ref{fig:onset-to-isolation}). These two empirically informed delay distributions provide a guide to possible response times in the case of an influenza outbreak and will enable us to evaluate if such delays are too long to contain a disease that can transmit rapidly such as influenza. \\
+The ability to contain an outbreak by isolating infected individuals is highly contingent on the response time, or delay, between individuals becoming symptomatic, getting tested, the test results being returned and going into isolation. The probability that this series of steps will take an given amount of time is encapsulated in the onset-to-isolation delay distribution, i.e. onset-to-isolation distribution determines the time between a case developing symptoms and then becoming isolated. Here we define the onset-to-isolation as a response time as it is determined by the time delay between an individual responding to symptoms by getting tested and the turn around time for the tests to be analysed and the result returned. We view the onset-to-isolation as a feature of the public health outbreak response rather than an epidemiological characteristic of a disease. As such it is possible for pandemic response to adapt their response time to meet the needs of an outbreak. \\
+
+We assume that an isolated case cannot transmit, so isolation is assumed to be 100\% effective once enacted ($R_{isolated} = 0$). The onset-to-isolation delay is parameterised with three scenarios: a fast response, based on the SARS in Hong Kong (Donnelly et al. 2003) and a slower response based on COVID-19 in Wuhan, China (Li et al. 2020) (Figure \ref{fig:onset-to-isolation}). Both the fast and slow onset-to-isolation are parameterised as Weibull distributions, the SARS-like distribution has shape ($\lambda$) 1.65 and scale ($k$) 4.29 (mean = 3.83 days, SD = 2.38 days), the COVID-like distribution has shape = 2.31 and scale = 9.48 (mean = 8.40, SD = 3.87 days) (Figure \ref{fig:onset-to-isolation}). These two empirically informed delay distributions provide a guide to possible response times in the case of an influenza outbreak and will enable us to evaluate if such delays are too long to contain a disease that can transmit rapidly such as influenza. We also include a third onset-to-isolation scenario based on the case where lateral flow rapid tests (LFTs) are provided to all individuals in the susceptible population and these people are freely able to self-test if they suspect they are symptomatic. We parameterise this as an exponential distribution, with rate ($\lambda$) 0.5, where most individuals will self-test very shortly after they become symptomatic (approximately 40\% of cases will self-test within the first day of sympmtom onset), with a few people waiting a 2 or more days before testing (approximately 3\% take longer than one week to take a self-test). \\
 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=\textwidth]{../plots/onset_to_isolation.png}
-\caption{Onset-to-isolation delay distribution for SARS (SARS-CoV-1) and
-  COVID-19 (SARS-CoV-2).}
+\caption{Three assumed onset-to-isolation delays used in the simuluation experiment. The \textit{Fast} scenario is based on the onset-to-isolation for SARS-CoV-1 response in Hong Kong (Donnelly et al. 2003), the median onset-to-isolation time is 3.4 days (blue dashed line). The \textit{Slow} scenario is based on the onset-to-isolation for the SARS-CoV-2 response in Wuhan, China (Li et al., 2020), the median onset-to-isolatiojn is 8.1 days (red dashed line). The lateral flow test (LFT) scenario is an assumed distributed for rapid self-administered home testing upon isolation, the median delay from symptom onset to isolation in this scenario is 1.4 days.}
 \label{fig:onset-to-isolation}
 \end{figure}
 
