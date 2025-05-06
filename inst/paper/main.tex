@@ -50,7 +50,7 @@ The NPI implemented in the transmission model is an isolation of symptomatic cas
 
 We use the same definition for outbreak control as \cite{hellewellFeasibilityControllingCOVID192020}: no new cases between 12 and 16 weeks after the start of an outbreak. The rationale for this criteria is that some outbreaks that do not take off and become large may still have a few cases for the first few weeks of an outbreak, therefore the window for control needs to be enough time after the seeding of an outbreak to be sure it is extinct. \\
 
-There is also a maximum number of cases in simulation model, that when reached is judged to have reached a large epidemic and not controllable with 12-16 weeks. We set this limit to 500 cases.
+There is also a maximum number of cases in simulation model, that when reached is judged to have reached a large epidemic and not controllable with 12-16 weeks. We set this limit to 500 cases. This number needs to be larger than the expected cluster size from an subcritical outbreak produce by chance (i.e. larger than $N_i / (1 - R)$, where $N_i$ is the number of initial cases and $R$ is the reproduction number).
 
 \subsection*{Pathogen epidemiological parameters} \label{epiparameters}
 
