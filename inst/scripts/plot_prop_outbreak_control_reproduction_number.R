@@ -3,25 +3,48 @@ library(ggplot2)
 library(dplyr)
 
 # read simulation results saved by running inst/scripts/run_analysis.R
-sweep_results <- readRDS(file.path("inst", "extdata", "simulations.rds"))
+h5n1_results <- readRDS(file.path("inst", "extdata", "h5n1_simulations.rds"))
+h1n1_results <- readRDS(file.path("inst", "extdata", "h1n1_simulations.rds"))
+h7n9_results <- readRDS(file.path("inst", "extdata", "h7n9_simulations.rds"))
 
-res <- sweep_results %>%
-  group_by(scenario) %>%
-  mutate(pext = ringbp::extinct_prob(sims[[1]], cap_cases = 500)) %>%
-  ungroup(scenario)
+h5n1_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 500), by = scenario]
+h1n1_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 500), by = scenario]
+h7n9_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 500), by = scenario]
 
-dt <- as.data.table(res)
-dt_data <- rbindlist(dt$data)
-dt_data <- cbind(dt_data, scenario = dt$scenario, pext = dt$pext)
+h5n1_data <- rbindlist(h5n1_results$data)
+h5n1_data[, `:=`(scenario = h5n1_results$scenario, pext = h5n1_results$pext)]
 
-prop_outbreak_control <- dt_data[
-  num.initial.cases == 20 & theta == "15%" & delay == "SARS" & prop.asym == 0,
-  .(control_effectiveness, index_R0, pext, subtype)
+h1n1_data <- rbindlist(h1n1_results$data)
+h1n1_data[, `:=`(scenario = h1n1_results$scenario, pext = h1n1_results$pext)]
+
+h7n9_data <- rbindlist(h7n9_results$data)
+h7n9_data[, `:=`(scenario = h7n9_results$scenario, pext = h7n9_results$pext)]
+
+rm(h5n1_results)
+rm(h1n1_results)
+rm(h7n9_results)
+
+flu_data <- rbindlist(list(h5n1_data, h1n1_data, h7n9_data))
+
+prop_outbreak_control <- flu_data[
+  num.initial.cases == 20 & theta == "15%" & prop.asym == 0,
+  .(control_effectiveness, index_R0, pext, subtype, delay)
 ]
 
 # convert to percentages for plotting
 prop_outbreak_control[, control_effectiveness := control_effectiveness * 100]
 prop_outbreak_control[, pext := pext * 100]
+
+# factorise and order delay type for plotting order
+prop_outbreak_control[, delay := as.factor(delay)]
+
+prop_outbreak_control[, delay := factor(delay, levels = c("slow", "fast", "lft"))]
+
+delay_labels <- c(
+  "slow" = "(A)          Slow",
+  "fast" = "(B)          Fast",
+  "lft" = "(C)          LFT"
+)
 
 prop_outbreak_control_plot <- ggplot2::ggplot(data = prop_outbreak_control) +
   ggplot2::geom_line(
@@ -42,6 +65,10 @@ prop_outbreak_control_plot <- ggplot2::ggplot(data = prop_outbreak_control) +
     ),
     size = 3,
     stroke = 0.75
+  ) +
+  ggplot2::facet_wrap(
+    vars(delay),
+    labeller = ggplot2::as_labeller(delay_labels)
   ) +
   ggplot2::scale_x_continuous(
     name = "Contacts traced (%)",
@@ -69,7 +96,9 @@ prop_outbreak_control_plot <- ggplot2::ggplot(data = prop_outbreak_control) +
   ggplot2::theme_bw() +
   ggplot2::theme(
     legend.position = "bottom",
-    legend.box="vertical"
+    legend.box="vertical",
+    strip.background = ggplot2::element_blank(),
+    strip.text = ggplot2::element_text(face = "bold", size = 12, hjust = 0)
   )
 
 ggplot2::ggsave(
