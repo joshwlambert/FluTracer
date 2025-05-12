@@ -15,7 +15,7 @@ h7n9_weibull_params <- epiparameter::convert_summary_stats_to_params(
 scenarios <- data.table(
   expand.grid(
     delay_group = list(data.table(
-      delay = c("SARS", "Wuhan"),
+      delay = c("fast", "slow", "lft"),
       onset_to_isolation = c(
         \(x) stats::rweibull(n = x, shape = 1.651524, scale = 4.287786),
         \(x) stats::rweibull(n = x, shape = 2.305172, scale = 9.483875),
@@ -43,7 +43,7 @@ scenarios <- data.table(
       )
     )),
     index_R0 = c(1.1, 1.5, 2.5, 3.5),
-    prop.asym = c(0, 0.1),
+    prop.asym = c(0, 0.1, 0.3),
     control_effectiveness = seq(0, 1, 0.2),
     num.initial.cases = c(5, 20, 40),
     quarantine = FALSE
@@ -81,10 +81,26 @@ sim_with_params <- purrr::partial(
 future::plan("multisession", workers = 8)
 
 # Run parameter sweep
-sweep_results <- ringbp::parameter_sweep(
-  scenarios,
+h5n1_results <- ringbp::parameter_sweep(
+  scenarios[subtype == "H5N1"],
   sim_fn = sim_with_params,
   samples = 100
 )
 
-saveRDS(sweep_results, file = file.path("inst", "extdata", "simulations.rds"))
+saveRDS(h5n1_results, file = file.path("inst", "extdata", "h5n1_simulations.rds"))
+
+h1n1_results <- ringbp::parameter_sweep(
+  scenarios[subtype == "H1N1"],
+  sim_fn = sim_with_params,
+  samples = 100
+)
+
+saveRDS(h1n1_results, file = file.path("inst", "extdata", "h1n1_simulations.rds"))
+
+h7n9_results <- ringbp::parameter_sweep(
+  scenarios[subtype == "H7N9"],
+  sim_fn = sim_with_params,
+  samples = 100
+)
+
+saveRDS(h7n9_results, file = file.path("inst", "extdata", "h7n9_simulations.rds"))
