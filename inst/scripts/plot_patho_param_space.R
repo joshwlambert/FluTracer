@@ -125,22 +125,22 @@ ggplot2::ggplot(param_space, ggplot2::aes(x = prop_asym, y = R, color = pathogen
 # deterministic plot
 patho_param_space_plot <- ggplot2::ggplot() +
     ggplot2::annotate(
-      geom = "rect", xmin = 0, xmax = 35, ymin = 1.1, ymax = 3.5,
+      geom = "rect", xmin = 0, xmax = 50, ymin = 1.1, ymax = 3.5,
       fill = "coral", alpha = 0.5
   ) +
   ggplot2::annotate(
-    geom = "text", x = 17.5, y = 2.3, label = "H1N1/H5N1/H7N9\n Scenarios",
+    geom = "text", x = 25, y = 2.3, label = "H1N1/H5N1/H7N9\n Scenarios",
     size = 3
   ) +
   ggfx::with_blur(
     ggplot2::annotate(
-      geom = "rect", xmin = 35, xmax = 45, ymin = 1, ymax = 10,
+      geom = "rect", xmin = 15, xmax = 45, ymin = 1, ymax = 5,
       fill = "darkgreen", alpha = 0.5
     ),
     sigma = 7.5
   ) +
   ggplot2::annotate(
-    geom = "text", x = 40, y = 4.5, label = "Influenza", size = 3
+    geom = "text", x = 40, y = 3, label = "Influenza", size = 3
   ) +
   ggfx::with_blur(
     ggplot2::annotate(
