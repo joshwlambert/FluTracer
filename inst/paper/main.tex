@@ -260,6 +260,8 @@ The difference in influenza subtype incubation period influences the efficacy of
 
 The pattern of outbreak control is broadly similar between 10\% asymptomatic cases and the 0\% and 30\% asymptomatic scenarios (Figure \ref{fig:prop-outbreak-control-prop-asym-iso}). Qualitative difference are in the 30\% asymptomatic scenario for LFT isolation, where the ability to control highly transmissible influenzas reduces to less than a quarter of outbreaks controlled at maxmimum contact tracing coverage (Figure \ref{fig:prop-outbreak-control-prop-asym-iso}). When every case is symptomatic the likelihood of containing highly transmissible outbreaks drastically increases for all onset-to-isolation response delays (Figure \ref{fig:prop-outbreak-control-prop-asym-iso}). \\
 
+The proportion of transmission that occurs before on the onset of symptoms has a moderate affect on epidemic containment for across isolation response rates (Figure \ref{fig:prop-outbreak-control-prop-presym-iso}). In all scenarios decreasing the proportion of presympatomatic transmission result in an greater or equal probability of outbreak control. When presymptomatic transmission is minimal, most $R = 1.1$ outbreaks go extinct without any contact tracing, at any rate of isolation after symptom onset, with extinction ensured if isolated after LFT testing (Figure \ref{fig:prop-outbreak-control-prop-presym-iso} leftmost column). Furthermore, when  $<1\%$ of transmission is presymptomatic, rapidly isolating after symptoms (e.g. after self-testing) can contain more than half of outbreaks for all transmissibility scenarios ($R \leq 3.5$) (Figure \ref{fig:prop-outbreak-control-prop-presym-iso}). Conversely, when 30\% of transmission is presymptomatic, less than half of highly transmissible epidemics are controlled, even with the most optimistic isolation response time and contact tracing coverage (Figure \ref{fig:prop-outbreak-control-prop-presym-iso} rightmost column). \\
+
 The ability to control an epidemic that can readily transmit human-to-human is moderated by the initial number of infectious individuals that seed the outbreak. The higher the number of cases the less chance that stochastic extinction of a transmission chain will end the whole epidemic. For an influenza pandemic, the number of initial infected individuals influences efficacy of control-by-isolation at all transmissibility scenarios evaluated ($R \in \{1.1, 1.5, 2.5, 3.5\}$, Figure \ref{fig:prop-outbreak-control-num-init-cases}). When $R = 1.1$ most outbreaks can be controlled without isolation and contact tracing, even with 40 initial infectors Figure \ref{fig:prop-outbreak-control-num-init-cases}). When $R = 1.5$ the increase in the number of initial infections from 5 to 20 has a large decrease in outbreaks controlled at low levels of contact tracing, the same pattern when the number of initial infectors is twofold larger at 40, but these differences in outbreak control diminish as contact tracing increases towards 100\% (Figure \ref{fig:prop-outbreak-control-num-init-cases}). When the number of cases seeding the outbreak is $>20$ at $R>2.5$ a large proportion of outbreaks become uncontrollable until contact tracing reaches $>60\%$. In the worst case transmissibility scenario ($R = 3.5$) if contact tracing is not activated until at least 20 individuals are infected then close to 100\% of contacts with need to be traced in order to control the majority of outbreaks (Figure \ref{fig:prop-outbreak-control-num-init-cases}).  \\
 
 \begin{figure}[ht]
@@ -319,6 +321,13 @@ The ability to control an epidemic that can readily transmit human-to-human is m
 \includegraphics[width=\textwidth]{../plots/prop_outbreak_control_prop_asym_iso.png}
 \caption{Stub.}
 \label{fig:prop-outbreak-control-prop-asym-iso}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{../plots/prop_outbreak_control_prop_presym_iso.png}
+\caption{Stub.}
+\label{fig:prop-outbreak-control-prop-presym-iso}
 \end{figure}
 
 \end{document}
