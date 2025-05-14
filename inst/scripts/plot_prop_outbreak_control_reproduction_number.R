@@ -1,6 +1,5 @@
 library(data.table)
 library(ggplot2)
-library(dplyr)
 
 # read simulation results saved by running inst/scripts/run_analysis.R
 h5n1_results <- readRDS(file.path("inst", "extdata", "h5n1_simulations.rds"))
