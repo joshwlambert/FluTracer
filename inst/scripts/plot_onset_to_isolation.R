@@ -14,7 +14,7 @@ onset_to_isolation <- melt(
   data = onset_to_isolation,
   id.vars = "x",
   measure.vars = c("Fast", "Slow", "LFT"),
-  variable.name = "disease",
+  variable.name = "response",
   value.name = "onset_to_isolation"
 )
 
@@ -26,12 +26,15 @@ slow_median <- epiparameter::convert_params_to_summary_stats(
 )$median
 lft_median <- log(2) / 0.5
 
+# order response factors for plotting order
+onset_to_isolation[, response := factor(response, levels = c("Slow", "Fast", "LFT"))]
+
 onset_to_isolation_plot <- ggplot2::ggplot(data = onset_to_isolation) +
   ggplot2::geom_line(
     mapping = ggplot2::aes(
       x = x,
       y = onset_to_isolation,
-      col = disease
+      col = response
     )
   ) +
   ggplot2::geom_ribbon(
@@ -40,15 +43,15 @@ onset_to_isolation_plot <- ggplot2::ggplot(data = onset_to_isolation) +
       y = onset_to_isolation,
       ymin = 0,
       ymax = onset_to_isolation,
-      fill = disease
+      fill = response
     ),
     alpha = 0.1
   ) +
   ggplot2::geom_vline(
-    mapping = ggplot2::aes(xintercept = fast_median), lty = 2, col = "#1A85FF"
+    mapping = ggplot2::aes(xintercept = slow_median), lty = 2, col = "#1A85FF"
   ) +
   ggplot2::geom_vline(
-    mapping = ggplot2::aes(xintercept = slow_median), lty = 2, col = "#D41159"
+    mapping = ggplot2::aes(xintercept = fast_median), lty = 2, col = "#D41159"
   ) +
   ggplot2::geom_vline(
     mapping = ggplot2::aes(xintercept = lft_median), lty = 2, col = "#FFB000"
