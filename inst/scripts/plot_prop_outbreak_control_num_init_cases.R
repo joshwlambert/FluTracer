@@ -1,30 +1,41 @@
 library(ggplot2)
 library(data.table)
-library(dplyr)
 
 # read simulation results saved by running inst/scripts/run_analysis.R
-sweep_results <- readRDS(file.path("inst", "extdata", "simulations.rds"))
+h5n1_results <- readRDS(file.path("inst", "extdata", "h5n1_simulations.rds"))
+h1n1_results <- readRDS(file.path("inst", "extdata", "h1n1_simulations.rds"))
+h7n9_results <- readRDS(file.path("inst", "extdata", "h7n9_simulations.rds"))
 
-res <- sweep_results %>%
-  group_by(scenario) %>%
-  mutate(pext = ringbp::extinct_prob(sims[[1]], cap_cases = 500)) %>%
-  ungroup(scenario)
+h5n1_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 500), by = scenario]
+h1n1_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 500), by = scenario]
+h7n9_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 500), by = scenario]
 
-dt <- as.data.table(res)
-dt_data <- rbindlist(dt$data)
-dt_data <- cbind(dt_data, scenario = dt$scenario, pext = dt$pext)
+h5n1_data <- rbindlist(h5n1_results$data)
+h5n1_data[, `:=`(scenario = h5n1_results$scenario, pext = h5n1_results$pext)]
 
-prop_outbreak_control_num_init_cases <- dt_data[
-  theta == "15%" & delay == "SARS" & prop.asym == 0,
-  .(index_R0, control_effectiveness, num.initial.cases, pext, subtype)
+h1n1_data <- rbindlist(h1n1_results$data)
+h1n1_data[, `:=`(scenario = h1n1_results$scenario, pext = h1n1_results$pext)]
+
+h7n9_data <- rbindlist(h7n9_results$data)
+h7n9_data[, `:=`(scenario = h7n9_results$scenario, pext = h7n9_results$pext)]
+
+rm(h5n1_results)
+rm(h1n1_results)
+rm(h7n9_results)
+
+flu_data <- rbindlist(list(h5n1_data, h1n1_data, h7n9_data))
+
+prop_outbreak_control <- flu_data[
+  theta == "15%" & prop.asym == 0 & delay == "fast",
+  .(control_effectiveness, index_R0, num.initial.cases, pext, subtype)
 ]
 
 # convert to percentages for plotting
-prop_outbreak_control_num_init_cases[, control_effectiveness := control_effectiveness * 100]
-prop_outbreak_control_num_init_cases[, pext := pext * 100]
+prop_outbreak_control[, control_effectiveness := control_effectiveness * 100]
+prop_outbreak_control[, pext := pext * 100]
 
 prop_outbreak_control_num_init_cases_plot <- ggplot2::ggplot(
-  data = prop_outbreak_control_num_init_cases
+  data = prop_outbreak_control
 ) +
   ggplot2::geom_point(
     mapping = ggplot2::aes(
