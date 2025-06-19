@@ -1,8 +1,8 @@
 library(ringbp)
-library(purrr)
-library(future)
 library(data.table)
 library(epiparameter)
+library(future)
+library(future.apply)
 
 h5n1_weibull_params <- epiparameter::convert_summary_stats_to_params(
   "weibull", mean = 3.3, sd = 1.5
@@ -17,36 +17,38 @@ scenarios <- data.table(
     delay_group = list(data.table(
       delay = c("fast", "slow", "lft"),
       onset_to_isolation = c(
-        \(x) stats::rweibull(n = x, shape = 1.651524, scale = 4.287786),
-        \(x) stats::rweibull(n = x, shape = 2.305172, scale = 9.483875),
-        \(x) stats::rexp(n = x, rate = 0.5)
+        \(n) stats::rweibull(n = n, shape = 1.651524, scale = 4.287786),
+        \(n) stats::rweibull(n = n, shape = 2.305172, scale = 9.483875),
+        \(n) stats::rexp(n = n, rate = 0.5)
       )
-    )),
-    k_group = list(data.table(
-      theta = c("<1%", "15%", "30%"),
-      k = c(30, 1.95, 0.7)
     )),
     incubation_period_group = list(data.table(
       subtype = c("H1N1", "H5N1", "H7N9"),
       incubation_period = c(
-        \(x) stats::rweibull(n = x, shape = 1.77, scale = 1.86),
-        \(x) stats::rweibull(
-          n = x,
+        \(n) stats::rweibull(n = n, shape = 1.77, scale = 1.86),
+        \(n) stats::rweibull(
+          n = n,
           shape = h5n1_weibull_params$shape,
           scale = h5n1_weibull_params$scale
         ),
-        \(x) stats::rweibull(
-          n = x,
+        \(n) stats::rweibull(
+          n = n,
           shape = h7n9_weibull_params$shape,
           scale = h7n9_weibull_params$scale
         )
       )
     )),
-    index_R0 = c(1.1, 1.5, 2.5, 3.5),
-    prop.asym = c(0, 0.1, 0.3),
-    control_effectiveness = seq(0, 1, 0.2),
-    num.initial.cases = c(5, 20, 40),
-    quarantine = FALSE
+    r0_community = c(1.1, 1.5, 2.5, 3.5),
+    r0_isolated = 0,
+    disp_community = 0.16,
+    disp_isolated = 1,
+    prop_presymptomatic = c(0.01, 0.15, 0.3),
+    prop_asymptomatic = c(0, 0.1, 0.3),
+    prop_ascertain = seq(0, 1, 0.2),
+    initial_cases = c(5, 20, 40),
+    quarantine = FALSE,
+    cap_max_days = 140,
+    cap_cases = 5000
   )
 )
 
@@ -54,53 +56,44 @@ list_cols <- grep("_group", colnames(scenarios), value = TRUE)
 non_list_cols <- setdiff(colnames(scenarios), list_cols)
 
 expanded_groups <- scenarios[, rbindlist(delay_group), by = c(non_list_cols)]
-expanded_k <- scenarios[, rbindlist(k_group), by = c(non_list_cols)]
 expanded_incub <- scenarios[, rbindlist(incubation_period_group), by = c(non_list_cols)]
 
 scenarios <- merge(
-  expanded_groups, expanded_k, by = non_list_cols, allow.cartesian = TRUE
+  expanded_groups, expanded_incub, by = non_list_cols, allow.cartesian = TRUE
 )
-scenarios <- merge(
-  scenarios, expanded_incub, by = non_list_cols, allow.cartesian = TRUE
-)
-scenarios[, scenario :=  1:.N]
 
-# Parameterise fixed parameters
-sim_with_params <- purrr::partial(
-  ringbp::scenario_sim,
-  cap_max_days = 365,
-  cap_cases = 500,
-  r0isolated = 0,
-  disp.iso = 1,
-  disp.subclin = 0.16,
-  disp.com = 0.16
-)
+scenarios[, scenario :=  1:.N]
+scenario_sims <- scenarios[, list(data = list(.SD)), by = scenario]
+
+n <- 1
 
 # Set up multicore if using see ?future::plan for details
 # Use the workers argument to control the number of cores used.
-future::plan("multisession", workers = 8)
+# future::plan("multisession", workers = 7)
 
 # Run parameter sweep
-h5n1_results <- ringbp::parameter_sweep(
-  scenarios[subtype == "H5N1"],
-  sim_fn = sim_with_params,
-  samples = 100
-)
+scenario_sims[, sims := lapply(data, \(x, n) {
+  scenario_sim(
+    n = n,
+    initial_cases = x$initial_cases,
+    offspring = offspring_opts(
+      community = \(n) rnbinom(n = n, mu = x$r0_community, size = x$disp_community),
+      isolated = \(n) rnbinom(n = n, mu = x$r0_isolated, size = x$disp_isolated)
+    ),
+    delays = delay_opts(
+      incubation_period = x$incubation_period[[1]],
+      onset_to_isolation = x$onset_to_isolation[[1]]
+    ),
+    event_probs = event_prob_opts(
+      asymptomatic = x$prop_asymptomatic,
+      presymptomatic_transmission = x$prop_presymptomatic,
+      symptomatic_ascertained = x$prop_ascertain
+    ),
+    interventions = intervention_opts(quarantine = x$quarantine),
+    sim = sim_opts(cap_max_days = x$cap_max_days, cap_cases = x$cap_cases)
+  )
+},
+n = n
+)]
 
-saveRDS(h5n1_results, file = file.path("inst", "extdata", "h5n1_simulations.rds"))
-
-h1n1_results <- ringbp::parameter_sweep(
-  scenarios[subtype == "H1N1"],
-  sim_fn = sim_with_params,
-  samples = 100
-)
-
-saveRDS(h1n1_results, file = file.path("inst", "extdata", "h1n1_simulations.rds"))
-
-h7n9_results <- ringbp::parameter_sweep(
-  scenarios[subtype == "H7N9"],
-  sim_fn = sim_with_params,
-  samples = 100
-)
-
-saveRDS(h7n9_results, file = file.path("inst", "extdata", "h7n9_simulations.rds"))
+saveRDS(scenario_sims, file = file.path("inst", "extdata", "pilot_simulations.rds"))
