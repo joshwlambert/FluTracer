@@ -18,5 +18,7 @@ Imports:
     epiparameter,
     dplyr,
     sn
+Remotes:
+    epiforecasts/ringbp
 Encoding: UTF-8
 RoxygenNote: 7.3.2
