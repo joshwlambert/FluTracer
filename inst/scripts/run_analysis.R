@@ -69,10 +69,10 @@ n <- 1
 
 # Set up multicore if using see ?future::plan for details
 # Use the workers argument to control the number of cores used.
-# future::plan("multisession", workers = 7)
+future::plan("multicore", workers = 8)
 
 # Run parameter sweep
-scenario_sims[, sims := lapply(data, \(x, n) {
+scenario_sims[, sims := future_lapply(data, \(x, n) {
   scenario_sim(
     n = n,
     initial_cases = x$initial_cases,
