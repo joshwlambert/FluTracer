@@ -8,7 +8,7 @@ pwd; hostname; date
 
 echo "Running FluTracer analysis script"
 
-module load R
+module load R/4.4.0
 
 Rscript inst/scripts/run_analysis.R
 

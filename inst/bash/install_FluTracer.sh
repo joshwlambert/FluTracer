@@ -6,5 +6,5 @@
 #SBATCH --output=install_FluTracer.log
 pwd; hostname; date
 
-ml R
+ml R/4.4.0
 Rscript -e "remotes::install_github('joshwlambert/FluTracer')"
