@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=FluTracer
-#SBATCH --ntasks=8
+#SBATCH --ntasks=16
 #SBATCH --nodes=1
 #SBATCH --mem=5GB
 #SBATCH --time=01:00:00

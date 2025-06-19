@@ -69,7 +69,7 @@ n <- 1
 
 # Set up multicore if using see ?future::plan for details
 # Use the workers argument to control the number of cores used.
-future::plan("multicore", workers = 8)
+future::plan("multicore", workers = 16)
 
 # Run parameter sweep
 scenario_sims[, sims := future_lapply(data, \(x, n) {
@@ -93,7 +93,8 @@ scenario_sims[, sims := future_lapply(data, \(x, n) {
     sim = sim_opts(cap_max_days = x$cap_max_days, cap_cases = x$cap_cases)
   )
 },
-n = n
+n = n,
+future.seed = TRUE
 )]
 
 saveRDS(scenario_sims, file = file.path("inst", "extdata", "pilot_simulations.rds"))
