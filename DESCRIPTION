@@ -9,5 +9,14 @@ Description: More about what it does (maybe more than one line)
 License: MIT + file LICENSE
 Depends: 
     R (>= 4.1.0)
+Imports:
+    ringbp,
+    data.table,
+    ggplot2,
+    future,
+    future.apply,
+    epiparameter,
+    dplyr,
+    sn
 Encoding: UTF-8
 RoxygenNote: 7.3.2
