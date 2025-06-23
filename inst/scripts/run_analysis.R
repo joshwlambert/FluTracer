@@ -81,7 +81,7 @@ scenarios <- scenarios[subtype == arg]
 
 scenario_sims <- scenarios[, list(data = list(.SD)), by = scenario]
 
-n <- 100
+n <- 10
 
 # Set up multicore if using see ?future::plan for details
 # Use the workers argument to control the number of cores used.
