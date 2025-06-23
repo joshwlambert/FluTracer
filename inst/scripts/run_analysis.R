@@ -7,14 +7,22 @@ library(future.apply)
 # not exact, works for differentiatign LSHTM HPC from running locally
 on_hpc <- grepl(pattern = "hpc", x = Sys.info()["nodename"], ignore.case = TRUE)
 
+cat("Running on HPC: ", on_hpc)
+cat("Running interactively: ", interactive())
+
 # if run on HPC capture which pathogen subtype to run
 if (!interactive() && on_hpc) {
-  arg <- commandArgs(TRUE)
+  args <- commandArgs(TRUE)
 } else {
-  arg <- "H5N1"
+  args <- c("H5N1", "no_quarantine")
 }
 
-arg <- match.arg(arg, choices = c("H1N1", "H5N1", "H7N9"))
+# underscore for data.table subsetting
+subtype_ <- match.arg(args[1], choices = c("H1N1", "H5N1", "H7N9"))
+quarantine_ <- match.arg(args[2], choices = c("quarantine", "no_quarantine"))
+
+# convert character string to boolean logical
+quarantine_ <- quarantine_ == "quarantine"
 
 h5n1_weibull_params <- epiparameter::convert_summary_stats_to_params(
   "weibull", mean = 3.3, sd = 1.5
@@ -77,7 +85,8 @@ scenarios <- merge(
 scenarios[, scenario :=  1:.N]
 
 # subset to subtype
-scenarios <- scenarios[subtype == arg]
+scenarios <- scenarios[subtype == subtype_]
+scenarios <- scenarios[quarantine == quarantine_]
 
 scenario_sims <- scenarios[, list(data = list(.SD)), by = scenario]
 
@@ -117,7 +126,21 @@ n = n,
 future.seed = TRUE
 )]
 
-# for backwards compatibility with file names
-arg <- tolower(arg)
+if (quarantine_) {
+  file_suffix <- "Q"
+} else {
+  file_suffix <- "no_Q"
+}
 
-saveRDS(scenario_sims, file = file.path("inst", "extdata", paste0(arg, "_simulations.rds")))
+cat("Finished simulation...")
+
+cat("Saving simulation results...")
+
+saveRDS(
+  object = scenario_sims,
+  file = file.path(
+    "inst", "extdata", paste0(subtype, "_simulations_", file_suffix, ".rds")
+  )
+)
+
+cat("Finished")
