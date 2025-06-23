@@ -7,8 +7,9 @@ library(future.apply)
 # not exact, works for differentiating LSHTM HPC from running locally
 on_hpc <- nchar(Sys.getenv("SLURM_CLUSTER_NAME")) > 0
 
-cat("Running on HPC: ", on_hpc)
-cat("Running interactively: ", interactive())
+cat("Running on HPC: ", on_hpc, "\n")
+
+cat("Running interactively: ", interactive(), "\n")
 
 # if run on HPC capture which pathogen subtype to run
 if (!interactive() && on_hpc) {
@@ -20,6 +21,10 @@ if (!interactive() && on_hpc) {
 # underscore for data.table subsetting
 subtype_ <- match.arg(args[1], choices = c("H1N1", "H5N1", "H7N9"))
 quarantine_ <- match.arg(args[2], choices = c("quarantine", "no_quarantine"))
+
+cat("Running subtype: ", subtype_, "\n")
+
+cat("Running with: ", quarantine_, "\n")
 
 # convert character string to boolean logical
 quarantine_ <- quarantine_ == "quarantine"
@@ -132,9 +137,9 @@ if (quarantine_) {
   file_suffix <- "no_Q"
 }
 
-cat("Finished simulation...")
+cat("Finished simulation... \n")
 
-cat("Saving simulation results...")
+cat("Saving simulation results... \n")
 
 saveRDS(
   object = scenario_sims,
