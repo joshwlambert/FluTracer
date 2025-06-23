@@ -4,8 +4,8 @@ library(epiparameter)
 library(future)
 library(future.apply)
 
-# not exact, works for differentiatign LSHTM HPC from running locally
-on_hpc <- grepl(pattern = "hpc", x = Sys.info()["nodename"], ignore.case = TRUE)
+# not exact, works for differentiating LSHTM HPC from running locally
+on_hpc <- nchar(Sys.getenv("SLURM_CLUSTER_NAME")) > 0
 
 cat("Running on HPC: ", on_hpc)
 cat("Running interactively: ", interactive())
@@ -139,7 +139,7 @@ cat("Saving simulation results...")
 saveRDS(
   object = scenario_sims,
   file = file.path(
-    "inst", "extdata", paste0(subtype, "_simulations_", file_suffix, ".rds")
+    "inst", "extdata", paste0(subtype_, "_simulations_", file_suffix, ".rds")
   )
 )
 
