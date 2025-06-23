@@ -3,7 +3,7 @@
 #SBATCH --ntasks=16
 #SBATCH --nodes=1
 #SBATCH --mem=10GB
-#SBATCH --time=01:00:00
+#SBATCH --time=05:00:00
 #SBATCH --output=FluTracer.log
 pwd; hostname; date
 
