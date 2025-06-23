@@ -4,6 +4,18 @@ library(epiparameter)
 library(future)
 library(future.apply)
 
+# not exact, works for differentiatign LSHTM HPC from running locally
+on_hpc <- grepl(pattern = "hpc", x = Sys.info()["nodename"], ignore.case = TRUE)
+
+# if run on HPC capture which pathogen subtype to run
+if (!interactive() && on_hpc) {
+  arg <- commandArgs(TRUE)
+} else {
+  arg <- "H5N1"
+}
+
+arg <- match.arg(arg, choices = c("H1N1", "H5N1", "H7N9"))
+
 h5n1_weibull_params <- epiparameter::convert_summary_stats_to_params(
   "weibull", mean = 3.3, sd = 1.5
 )
@@ -46,7 +58,7 @@ scenarios <- data.table(
     prop_asymptomatic = c(0, 0.1, 0.3),
     prop_ascertain = seq(0, 1, 0.2),
     initial_cases = c(5, 20, 40),
-    quarantine = FALSE,
+    quarantine = c(FALSE, TRUE),
     cap_max_days = 140,
     cap_cases = 5000
   )
@@ -63,13 +75,21 @@ scenarios <- merge(
 )
 
 scenarios[, scenario :=  1:.N]
+
+# subset to subtype
+scenarios <- scenarios[subtype == arg]
+
 scenario_sims <- scenarios[, list(data = list(.SD)), by = scenario]
 
 n <- 100
 
 # Set up multicore if using see ?future::plan for details
 # Use the workers argument to control the number of cores used.
-future::plan("multicore", workers = 16)
+if (!interactive() && on_hpc) {
+  future::plan("multicore", workers = 16)
+} else {
+  future::plan("multisession", workers = 4)
+}
 
 # Run parameter sweep
 scenario_sims[, sims := future_lapply(data, \(x, n) {
@@ -97,4 +117,7 @@ n = n,
 future.seed = TRUE
 )]
 
-saveRDS(scenario_sims, file = file.path("inst", "extdata", "pilot_simulations.rds"))
+# for backwards compatibility with file names
+arg <- tolower(arg)
+
+saveRDS(scenario_sims, file = file.path("inst", "extdata", paste0(arg, "_simulations.rds")))
