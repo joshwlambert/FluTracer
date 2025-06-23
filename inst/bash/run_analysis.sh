@@ -7,7 +7,10 @@
 #SBATCH --output=FluTracer.log
 pwd; hostname; date
 
-echo "Running FluTracer analysis script"
+subtype=$1
+quarantine=$2
+
+echo "Running FluTracer analysis script for: ${subtype}"
 
 module load R/4.4.0
 
@@ -15,6 +18,6 @@ echo "Number of cores available: "
 
 Rscript -e "future::availableCores()"
 
-Rscript inst/scripts/run_analysis.R
+Rscript inst/scripts/run_analysis.R ${subtype} ${quarantine}
 
 date
