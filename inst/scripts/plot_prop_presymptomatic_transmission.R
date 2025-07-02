@@ -1,3 +1,4 @@
+library(ringbp)
 library(data.table)
 library(ggplot2)
 library(sn)
@@ -7,20 +8,29 @@ density_eval <- seq(0, 15, 0.1)
 prop_presymptomatic_transmission <- data.table(
   x = density_eval,
   prop_presym_trans_30 = sn::dsn(
-    x = density_eval, xi = 5, omega = 2, alpha = 0.7
+    x = density_eval,
+    xi = 5,
+    omega = 2,
+    alpha = ringbp:::presymptomatic_transmission_to_alpha(presymptomatic_transmission = 0.3)
   ),
   prop_presym_trans_15 = sn::dsn(
-    x = density_eval, xi = 5, omega = 2, alpha = 1.95
+    x = density_eval,
+    xi = 5,
+    omega = 2,
+    alpha = ringbp:::presymptomatic_transmission_to_alpha(presymptomatic_transmission = 0.15)
   ),
-  prop_presym_trans_lt1 = sn::dsn(
-    x = density_eval, xi = 5, omega = 2, alpha = 30
+  prop_presym_trans_1 = sn::dsn(
+    x = density_eval,
+    xi = 5,
+    omega = 2,
+    alpha = ringbp:::presymptomatic_transmission_to_alpha(presymptomatic_transmission = 0.01)
   )
 )
 
 prop_presymptomatic_transmission <- melt(
   data = prop_presymptomatic_transmission,
   id.vars = "x",
-  measure.vars = c("prop_presym_trans_30", "prop_presym_trans_15", "prop_presym_trans_lt1"),
+  measure.vars = c("prop_presym_trans_30", "prop_presym_trans_15", "prop_presym_trans_1"),
   variable.name = "prop",
   value.name = "prop_presym_trans"
 )
@@ -53,9 +63,18 @@ prop_presymptomatic_transmission_plot <- ggplot2::ggplot(
   ) +
   ggplot2::scale_x_continuous(name = "Days since infection") +
   ggplot2::scale_y_continuous(name = "Density") +
-  ggplot2::labs(colour = "Proportion presymptomatic transmission", fill = "Proportion presymptomatic transmission") +
-  ggplot2::scale_colour_manual(values = c("#009e74", "#56b3e9", "#cc79a7"), labels = c("30%", "15%", "<1%")) +
-  ggplot2::scale_fill_manual(values = c("#009e74", "#56b3e9", "#cc79a7"), labels = c("30%", "15%", "<1%")) +
+  ggplot2::labs(
+    colour = "Proportion presymptomatic transmission",
+    fill = "Proportion presymptomatic transmission"
+  ) +
+  ggplot2::scale_colour_manual(
+    values = c("#009e74", "#56b3e9", "#cc79a7"),
+    labels = c("30%", "15%", "1%")
+  ) +
+  ggplot2::scale_fill_manual(
+    values = c("#009e74", "#56b3e9", "#cc79a7"),
+    labels = c("30%", "15%", "1%")
+  ) +
   ggplot2::theme_bw() +
   ggplot2::theme(legend.position = "bottom")
 
