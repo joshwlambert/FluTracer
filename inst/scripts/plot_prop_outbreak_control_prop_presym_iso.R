@@ -1,15 +1,14 @@
 library(data.table)
 library(ggplot2)
-library(dplyr)
 
 # read simulation results saved by running inst/scripts/run_analysis.R
-h5n1_results <- readRDS(file.path("inst", "extdata", "h5n1_simulations.rds"))
-h1n1_results <- readRDS(file.path("inst", "extdata", "h1n1_simulations.rds"))
-h7n9_results <- readRDS(file.path("inst", "extdata", "h7n9_simulations.rds"))
+h5n1_results <- readRDS(file.path("inst", "extdata", "h5n1_simulations_no_Q.rds"))
+h1n1_results <- readRDS(file.path("inst", "extdata", "h1n1_simulations_no_Q.rds"))
+h7n9_results <- readRDS(file.path("inst", "extdata", "h7n9_simulations_no_Q.rds"))
 
-h5n1_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 500), by = scenario]
-h1n1_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 500), by = scenario]
-h7n9_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 500), by = scenario]
+h5n1_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 5000), by = scenario]
+h1n1_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 5000), by = scenario]
+h7n9_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 5000), by = scenario]
 
 h5n1_data <- rbindlist(h5n1_results$data)
 h5n1_data[, `:=`(scenario = h5n1_results$scenario, pext = h5n1_results$pext)]
@@ -27,50 +26,52 @@ rm(h7n9_results)
 flu_data <- rbindlist(list(h5n1_data, h1n1_data, h7n9_data))
 
 prop_outbreak_control <- flu_data[
-  num.initial.cases == 20 & prop.asym == 0.1,
-  .(control_effectiveness, index_R0, pext, subtype, delay, theta)
+  initial_cases == 20 & prop_asymptomatic == 0.1,
+  .(prop_ascertain, r0_community, pext, subtype, delay, prop_presymptomatic)
 ]
 
 # convert to percentages for plotting
-prop_outbreak_control[, control_effectiveness := control_effectiveness * 100]
+prop_outbreak_control[, prop_ascertain := prop_ascertain * 100]
 prop_outbreak_control[, pext := pext * 100]
+prop_outbreak_control[, prop_presymptomatic := prop_presymptomatic * 100]
 
 # factorise and order delay type for plotting order
 prop_outbreak_control[, delay := as.factor(delay)]
 
 prop_outbreak_control[, delay := factor(delay, levels = c("slow", "fast", "lft"))]
+prop_outbreak_control[, prop_presymptomatic := as.factor(prop_presymptomatic)]
 
 delay_labels <- c(
   "slow" = "Slow",
   "fast" = "Fast",
   "lft" = "LFT",
-  "<1%" = "<1% presymptomatic",
-  "15%" = "15% presymptomatic",
-  "30%" = "30% presymptomatic"
+  "1" = "1% presymptomatic",
+  "15" = "15% presymptomatic",
+  "30" = "30% presymptomatic"
 )
 
 prop_outbreak_control_prop_presym_iso <- ggplot2::ggplot(data = prop_outbreak_control) +
   ggplot2::geom_line(
     mapping = ggplot2::aes(
-      x = control_effectiveness,
+      x = prop_ascertain,
       y = pext,
-      colour = as.factor(index_R0),
+      colour = as.factor(r0_community),
       linetype = as.factor(subtype)
     ),
     linewidth = 0.75
   ) +
   ggplot2::geom_point(
     mapping = ggplot2::aes(
-      x = control_effectiveness,
+      x = prop_ascertain,
       y = pext,
-      fill = as.factor(index_R0),
+      fill = as.factor(r0_community),
       shape = as.factor(subtype)
     ),
     size = 3,
     stroke = 0.75
   ) +
   ggplot2::facet_grid(
-    vars(delay), vars(theta),
+    vars(delay), vars(prop_presymptomatic),
     labeller = ggplot2::as_labeller(delay_labels)
   ) +
   ggplot2::scale_x_continuous(
