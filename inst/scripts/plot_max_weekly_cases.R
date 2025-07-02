@@ -2,9 +2,9 @@ library(data.table)
 library(ggplot2)
 
 # read simulation results saved by running inst/scripts/run_analysis.R
-h5n1_results <- readRDS(file.path("inst", "extdata", "h5n1_simulations.rds"))
-h1n1_results <- readRDS(file.path("inst", "extdata", "h1n1_simulations.rds"))
-h7n9_results <- readRDS(file.path("inst", "extdata", "h7n9_simulations.rds"))
+h5n1_results <- readRDS(file.path("inst", "extdata", "H5N1_simulations_no_Q.rds"))
+h1n1_results <- readRDS(file.path("inst", "extdata", "H1N1_simulations_no_Q.rds"))
+h7n9_results <- readRDS(file.path("inst", "extdata", "H7N9_simulations_no_Q.rds"))
 
 h5n1_median_max_weekly_cases <- vapply(
   h5n1_results$sims,
@@ -30,15 +30,15 @@ h7n9_median_max_weekly_cases <- vapply(
   FUN.VALUE = numeric(1)
 )
 
-h5n1_max_weekly_cases <- rbindlist(h5n1_results$data)[, c("index_R0", "control_effectiveness", "delay")]
+h5n1_max_weekly_cases <- rbindlist(h5n1_results$data)[, c("r0_community", "prop_ascertain", "delay")]
 h5n1_max_weekly_cases[, max_weekly_cases := h5n1_median_max_weekly_cases]
 h5n1_max_weekly_cases[, subtype := as.factor("H5N1")]
 
-h1n1_max_weekly_cases <- rbindlist(h1n1_results$data)[, c("index_R0", "control_effectiveness", "delay")]
+h1n1_max_weekly_cases <- rbindlist(h1n1_results$data)[, c("r0_community", "prop_ascertain", "delay")]
 h1n1_max_weekly_cases[, max_weekly_cases := h1n1_median_max_weekly_cases]
 h1n1_max_weekly_cases[, subtype := as.factor("H1N1")]
 
-h7n9_max_weekly_cases <- rbindlist(h7n9_results$data)[, c("index_R0", "control_effectiveness", "delay")]
+h7n9_max_weekly_cases <- rbindlist(h7n9_results$data)[, c("r0_community", "prop_ascertain", "delay")]
 h7n9_max_weekly_cases[, max_weekly_cases := h7n9_median_max_weekly_cases]
 h7n9_max_weekly_cases[, subtype := as.factor("H7N9")]
 
@@ -59,7 +59,7 @@ rm(h1n1_max_weekly_cases)
 rm(h7n9_max_weekly_cases)
 
 # Convert columns to factors for plotting
-cols_to_factor <- c("index_R0", "control_effectiveness", "delay")
+cols_to_factor <- c("r0_community", "prop_ascertain", "delay")
 max_weekly_cases[, (cols_to_factor) := lapply(.SD, as.factor), .SDcols = cols_to_factor]
 
 max_weekly_cases[, delay := factor(delay, levels = c("slow", "fast", "lft"))]
@@ -76,7 +76,7 @@ delay_labels <- c(
 max_weekly_cases_plot <- ggplot2::ggplot(data = max_weekly_cases) +
   ggplot2::geom_boxplot(
     mapping = ggplot2::aes(
-      x = control_effectiveness,
+      x = r0_community,
       y = max_weekly_cases
     )
   ) +
@@ -84,9 +84,9 @@ max_weekly_cases_plot <- ggplot2::ggplot(data = max_weekly_cases) +
     ggplot2::vars(delay), ggplot2::vars(subtype),
     labeller = ggplot2::as_labeller(delay_labels)
   ) +
-  ggplot2::scale_x_discrete(name = "Contacts traced (%)") +
+  ggplot2::scale_x_discrete(name = "Simulated community R0") +
   ggplot2::scale_y_continuous(
-    name = "Average maximum weekly cases",
+    name = "Median maximum weekly cases",
     expand = c(0.1, 0.1)
   ) +
   ggplot2::theme_bw() +
