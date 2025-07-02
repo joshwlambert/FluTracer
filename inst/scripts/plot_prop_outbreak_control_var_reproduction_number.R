@@ -1,27 +1,38 @@
 library(data.table)
 library(ggplot2)
-library(dplyr)
 
 # read simulation results saved by running inst/scripts/run_analysis.R
-sweep_results <- readRDS(file.path("inst", "extdata", "simulations.rds"))
+h5n1_results <- readRDS(file.path("inst", "extdata", "H5N1_simulations_no_Q.rds"))
+h1n1_results <- readRDS(file.path("inst", "extdata", "H1N1_simulations_no_Q.rds"))
+h7n9_results <- readRDS(file.path("inst", "extdata", "H7N9_simulations_no_Q.rds"))
 
-res <- sweep_results %>%
-  group_by(scenario) %>%
-  mutate(pext = ringbp::extinct_prob(sims[[1]], cap_cases = 500)) %>%
-  ungroup(scenario)
+h5n1_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 5000), by = scenario]
+h1n1_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 5000), by = scenario]
+h7n9_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 5000), by = scenario]
 
-dt <- as.data.table(res)
-dt_data <- rbindlist(dt$data)
-dt_data <- cbind(dt_data, scenario = dt$scenario, pext = dt$pext)
+h5n1_data <- rbindlist(h5n1_results$data)
+h5n1_data[, `:=`(scenario = h5n1_results$scenario, pext = h5n1_results$pext)]
+
+h1n1_data <- rbindlist(h1n1_results$data)
+h1n1_data[, `:=`(scenario = h1n1_results$scenario, pext = h1n1_results$pext)]
+
+h7n9_data <- rbindlist(h7n9_results$data)
+h7n9_data[, `:=`(scenario = h7n9_results$scenario, pext = h7n9_results$pext)]
+
+rm(h5n1_results)
+rm(h1n1_results)
+rm(h7n9_results)
+
+flu_data <- rbindlist(list(h5n1_data, h1n1_data, h7n9_data))
 
 # convert to percentages for plotting
-dt_data[, control_effectiveness := control_effectiveness * 100]
-dt_data[, pext := pext * 100]
+flu_data[, prop_ascertain := prop_ascertain * 100]
+flu_data[, pext := pext * 100]
 
 # calculate sd by subtype, R and control
-subtype_sd <- dt_data[
+subtype_sd <- flu_data[
   , .(subtype_sd = sd(pext)),
-  by = .(index_R0, prop.asym, control_effectiveness, num.initial.cases, delay, theta)
+  by = .(r0_community, prop_asymptomatic, prop_ascertain, initial_cases, delay, prop_presymptomatic)
 ]
 
 prop_outbreak_control_var_reproduction_number_plot <- ggplot2::ggplot(
@@ -29,9 +40,9 @@ prop_outbreak_control_var_reproduction_number_plot <- ggplot2::ggplot(
 ) +
   ggplot2::geom_point(
     mapping = ggplot2::aes(
-      x = as.factor(control_effectiveness),
+      x = as.factor(prop_ascertain),
       y = subtype_sd,
-      fill = as.factor(index_R0)
+      fill = as.factor(r0_community)
     ),
     shape = 21,
     size = 2,
