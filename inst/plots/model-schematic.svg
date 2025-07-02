@@ -28,10 +28,10 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="0.84096521"
-     inkscape:cx="460.78006"
-     inkscape:cy="75.508475"
+     inkscape:cx="353.76018"
+     inkscape:cy="159.34072"
      inkscape:window-width="1512"
-     inkscape:window-height="837"
+     inkscape:window-height="832"
      inkscape:window-x="0"
      inkscape:window-y="38"
      inkscape:window-maximized="0"
@@ -117,25 +117,6 @@
     </marker>
     <marker
        style="overflow:visible"
-       id="marker37633-3"
-       refX="0"
-       refY="0"
-       orient="auto-start-reverse"
-       inkscape:stockid="Arrow1L"
-       markerWidth="8.75"
-       markerHeight="5"
-       viewBox="0 0 8.75 5"
-       inkscape:isstock="true"
-       inkscape:collect="always"
-       preserveAspectRatio="xMidYMid">
-      <path
-         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
-         d="M 0,0 5,-5 -12.5,0 5,5 Z"
-         id="path37631-7"
-         transform="scale(-0.5)" />
-    </marker>
-    <marker
-       style="overflow:visible"
        id="marker37633-4"
        refX="0"
        refY="0"
@@ -189,6 +170,25 @@
          style="fill:context-stroke;fill-rule:evenodd;stroke:none"
          d="M 0,0 5,-5 -12.5,0 5,5 Z"
          id="arrow1L-4"
+         transform="scale(-0.5)" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker37633-48"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Arrow1L"
+       markerWidth="8.75"
+       markerHeight="5"
+       viewBox="0 0 8.75 5"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         style="fill:context-stroke;fill-rule:evenodd;stroke:none"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path37631-0"
          transform="scale(-0.5)" />
     </marker>
   </defs>
@@ -495,7 +495,7 @@
     <circle
        style="fill:#73808c;fill-opacity:1;stroke:#000000;stroke-width:0.290045"
        id="path234-1-5-8-2"
-       cx="167.95671"
+       cx="162.5"
        cy="32.5"
        r="2.3549778" />
     <circle
@@ -507,40 +507,40 @@
     <circle
        style="fill:#73808c;fill-opacity:1;stroke:#000000;stroke-width:0.290045"
        id="path234-1-5-8-3"
-       cx="182.95671"
+       cx="172.5"
        cy="22.5"
        r="2.3549778" />
     <circle
        style="fill:#73808c;fill-opacity:1;stroke:#000000;stroke-width:0.290045"
        id="path234-1-5-8-0"
-       cx="197.95671"
-       cy="12.5"
+       cx="178.5"
+       cy="12"
        r="2.3549778" />
     <circle
        style="fill:#73808c;fill-opacity:1;stroke:#000000;stroke-width:0.290045"
        id="path234-1-5-8-79"
-       cx="197.95671"
+       cx="198.5"
        cy="32.5"
        r="2.3549778" />
     <path
-       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.181921;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#marker37633)"
-       d="m 155.17954,41.225597 c 9.78679,-6.640191 9.78679,-6.640191 9.78679,-6.640191"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.183154;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#marker37633)"
+       d="m 154.64156,40.629231 c 5.66688,-5.44268 5.66688,-5.44268 5.66688,-5.44268"
        id="path36111" />
     <path
-       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.181921;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#marker37633-3)"
-       d="m 170.07919,30.854097 c 9.78679,-6.640191 9.78679,-6.640191 9.78679,-6.640191"
-       id="path36111-6" />
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.183154;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#marker37633-48)"
+       d="m 164.19339,30.559703 c 5.66688,-5.44268 5.66688,-5.44268 5.66688,-5.44268"
+       id="path36111-4" />
     <path
-       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.181921;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#marker37633-4)"
-       d="m 185.01835,21.019388 c 9.78679,-6.640191 9.78679,-6.640191 9.78679,-6.640191"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.183;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#marker37633-4)"
+       d="m 173.60232,20.371264 c 3.26266,-4.846965 3.26266,-4.846965 3.26266,-4.846965"
        id="path36111-5" />
     <path
        style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.182033;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#marker37881)"
        d="m 155.04481,43.940846 10.02415,6.576845"
        id="path37875" />
     <path
-       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.182033;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#marker37881-6)"
-       d="m 184.84466,24.004874 10.02415,6.576845"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.183;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#marker37881-6)"
+       d="m 174.81786,23.748976 19.78222,7.478845"
        id="path37875-4" />
     <text
        xml:space="preserve"
@@ -556,14 +556,14 @@
     <text
        xml:space="preserve"
        style="font-weight:300;font-size:3.52778px;font-family:'Gill Sans';-inkscape-font-specification:'Gill Sans Light';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-dasharray:none"
-       x="156.42976"
-       y="27.777046"
+       x="145.26678"
+       y="28.739988"
        id="text3195-4-8-3-7"><tspan
          sodipodi:role="line"
          id="tspan3193-4-3-6-5"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;stroke:#000000;stroke-width:0;stroke-dasharray:none"
-         x="156.42976"
-         y="27.777046">Person B</tspan></text>
+         x="145.26678"
+         y="28.739988">Person B</tspan></text>
     <text
        xml:space="preserve"
        style="font-weight:300;font-size:3.52778px;font-family:'Gill Sans';-inkscape-font-specification:'Gill Sans Light';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-dasharray:none"
@@ -578,27 +578,27 @@
     <text
        xml:space="preserve"
        style="font-weight:300;font-size:3.52778px;font-family:'Gill Sans';-inkscape-font-specification:'Gill Sans Light';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-dasharray:none"
-       x="170.33408"
-       y="18.099646"
+       x="156.87471"
+       y="18.655819"
        id="text3195-4-8-3-0"><tspan
          sodipodi:role="line"
          id="tspan3193-4-3-6-23"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;stroke:#000000;stroke-width:0;stroke-dasharray:none"
-         x="170.33408"
-         y="18.099646">Person D</tspan></text>
+         x="156.87471"
+         y="18.655819">Person D</tspan></text>
     <text
        xml:space="preserve"
        style="font-weight:300;font-size:3.52778px;font-family:'Gill Sans';-inkscape-font-specification:'Gill Sans Light';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-dasharray:none"
-       x="189.31111"
-       y="8.4305162"
+       x="173.10825"
+       y="8.5878258"
        id="text3195-4-8-3-0-5"
        inkscape:transform-center-x="1.7797518"
        inkscape:transform-center-y="-0.88987591"><tspan
          sodipodi:role="line"
          id="tspan3193-4-3-6-23-7"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.52778px;font-family:monospace;-inkscape-font-specification:monospace;fill:#000000;stroke:#000000;stroke-width:0;stroke-dasharray:none"
-         x="189.31111"
-         y="8.4305162">Person E</tspan></text>
+         x="173.10825"
+         y="8.5878258">Person E</tspan></text>
     <text
        xml:space="preserve"
        style="font-weight:300;font-size:3.52778px;font-family:'Gill Sans';-inkscape-font-specification:'Gill Sans Light';fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0;stroke-dasharray:none"
