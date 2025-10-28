@@ -19,6 +19,6 @@ Imports:
     dplyr,
     sn
 Remotes:
-    epiforecasts/ringbp
+    joshwlambert/ringbp@FluTracerPilot
 Encoding: UTF-8
 RoxygenNote: 7.3.2
