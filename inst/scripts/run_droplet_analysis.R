@@ -11,17 +11,8 @@ cat("Running on HPC: ", on_hpc, "\n")
 
 cat("Running interactively: ", interactive(), "\n")
 
-# if run on HPC capture which pathogen subtype to run
-if (!interactive() && on_hpc) {
-  args <- commandArgs(TRUE)
-} else {
-  args <- "H5N1"
-}
-
-# underscore for data.table subsetting
-subtype_ <- match.arg(args[1], choices = c("H1N1", "H5N1", "H7N9"))
-
-cat("Running subtype: ", subtype_, "\n")
+# no need to run analysis by subtype given small parameter space for this analysis
+cat("Running subtypes: H1N1, H5N1 & H7N9 \n")
 
 h5n1_weibull_params <- epiparameter::convert_summary_stats_to_params(
   "weibull", mean = 3.3, sd = 1.5
@@ -84,12 +75,9 @@ scenarios <- merge(
 
 scenarios[, scenario :=  1:.N]
 
-# subset to subtype
-scenarios <- scenarios[subtype == subtype_]
-
 scenario_sims <- scenarios[, list(data = list(.SD)), by = scenario]
 
-n <- 100
+n <- 1000
 
 # Set up multicore if using see ?future::plan for details
 # Use the workers argument to control the number of cores used.
@@ -132,9 +120,7 @@ cat("Saving simulation results... \n")
 
 saveRDS(
   object = scenario_sims,
-  file = file.path(
-    "inst", "extdata", paste0(subtype_, "_simulations_droplet.rds")
-  )
+  file = file.path("inst", "extdata", "simulations_droplet.rds")
 )
 
 cat("Finished \n")

@@ -7,9 +7,7 @@
 #SBATCH --output=%x_%j.log
 pwd; hostname; date
 
-subtype=$1
-
-echo "Running FluTracer droplet transmission analysis script for: ${subtype}"
+echo "Running FluTracer droplet transmission analysis script"
 
 module load R/4.4.0
 
@@ -17,6 +15,6 @@ echo "Number of cores available: "
 
 Rscript -e "future::availableCores()"
 
-Rscript inst/scripts/run_droplet_analysis.R ${subtype}
+Rscript inst/scripts/run_droplet_analysis.R
 
 date
