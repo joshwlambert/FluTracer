@@ -13,15 +13,18 @@ h5n1_weibull_params <- epiparameter::convert_summary_stats_to_params(
   "weibull", mean = 3.3, sd = 1.5
 )
 
+fast <-  epiparameter::convert_summary_stats_to_params("weibull", mean = 3, sd = 2)
+slow <- epiparameter::convert_summary_stats_to_params("weibull", mean = 5, sd = 2)
+
 # Put parameters that are grouped by disease into this data.table
 scenarios <- data.table(
   expand.grid(
     delay_group = list(data.table(
       delay = c("fast", "slow", "lft"),
       onset_to_isolation = c(
-        \(n) stats::rweibull(n = n, shape = 1.651524, scale = 4.287786),
-        \(n) stats::rweibull(n = n, shape = 2.305172, scale = 9.483875),
-        \(n) stats::rexp(n = n, rate = 0.5)
+        \(n) stats::rweibull(n = n, shape = fast$shape, scale = fast$scale),
+        \(n) stats::rweibull(n = n, shape = slow$shape, scale = slow$scale),
+        \(n) stats::rexp(n = n, rate = 1)
       )
     )),
     incubation_period_group = list(data.table(
@@ -36,7 +39,7 @@ scenarios <- data.table(
     )),
     r0_community = 2.5,
     r0_isolated = 0,
-    disp_community = 0.16,
+    disp_community = 0.8,
     disp_isolated = 1,
     prop_presymptomatic = c(0.15),
     prop_asymptomatic = c(0.1),
@@ -86,13 +89,13 @@ fast <- scenario_sim(
 )
 
 fast_extinct_prob <- extinct_prob(fast)
-cat("Baseline extinction probability:", fast_extinct_prob, "\n")
+cat("Baseline fast extinction probability:", fast_extinct_prob, "\n")
 
 # run baseline simulation with slow response
 x <- scenarios[delay == "slow", ]
 
 slow <- scenario_sim(
-  n = 100,
+  n = n,
   initial_cases = x$initial_cases,
   offspring = offspring_opts(
     community = \(n) rnbinom(n = n, mu = x$r0_community, size = x$disp_community),
@@ -112,7 +115,7 @@ slow <- scenario_sim(
 )
 
 slow_extinct_prob <- extinct_prob(slow)
-cat("Baseline extinction probability:", slow_extinct_prob, "\n")
+cat("Baseline slow extinction probability:", slow_extinct_prob, "\n")
 
 # try to find the optimal value of test_sensitivity
 
@@ -120,7 +123,7 @@ cat("Baseline extinction probability:", slow_extinct_prob, "\n")
 objective_fn <- function(test_sensitivity, baseline_ext_prob) {
   message("Running simulations with test sensitivity: ", test_sensitivity)
   lft <- scenario_sim(
-    n = 100,
+    n = n,
     initial_cases = x$initial_cases,
     offspring = offspring_opts(
       community = \(n) rnbinom(n = n, mu = x$r0_community, size = x$disp_community),
@@ -128,7 +131,7 @@ objective_fn <- function(test_sensitivity, baseline_ext_prob) {
     ),
     delays = delay_opts(
       incubation_period = x$incubation_period[[1]],
-      onset_to_isolation = \(n) stats::rexp(n = n, rate = 0.5)
+      onset_to_isolation = \(n) stats::rexp(n = n, rate = 1)
     ),
     event_probs = event_prob_opts(
       asymptomatic = x$prop_asymptomatic,

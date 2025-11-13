@@ -36,15 +36,18 @@ h7n9_weibull_params <- epiparameter::convert_summary_stats_to_params(
   "weibull", mean = 3.1, sd = 1.4
 )
 
+fast <-  epiparameter::convert_summary_stats_to_params("weibull", mean = 3, sd = 2)
+slow <- epiparameter::convert_summary_stats_to_params("weibull", mean = 5, sd = 2)
+
 # Put parameters that are grouped by disease into this data.table
 scenarios <- data.table(
   expand.grid(
     delay_group = list(data.table(
       delay = c("fast", "slow", "lft"),
       onset_to_isolation = c(
-        \(n) stats::rweibull(n = n, shape = 1.651524, scale = 4.287786),
-        \(n) stats::rweibull(n = n, shape = 2.305172, scale = 9.483875),
-        \(n) stats::rexp(n = n, rate = 0.5)
+        \(n) stats::rweibull(n = n, shape = fast$shape, scale = fast$scale),
+        \(n) stats::rweibull(n = n, shape = slow$shape, scale = slow$scale),
+        \(n) stats::rexp(n = n, rate = 1)
       )
     )),
     incubation_period_group = list(data.table(
@@ -65,7 +68,7 @@ scenarios <- data.table(
     )),
     r0_community = c(1.1, 1.5, 2.5, 3.5),
     r0_isolated = 0,
-    disp_community = 0.16,
+    disp_community = 0.8,
     disp_isolated = 1,
     prop_presymptomatic = c(0.01, 0.15, 0.3),
     prop_asymptomatic = c(0, 0.1, 0.3),

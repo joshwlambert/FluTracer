@@ -21,15 +21,18 @@ h7n9_weibull_params <- epiparameter::convert_summary_stats_to_params(
   "weibull", mean = 3.1, sd = 1.4
 )
 
+fast <-  epiparameter::convert_summary_stats_to_params("weibull", mean = 3, sd = 2)
+slow <- epiparameter::convert_summary_stats_to_params("weibull", mean = 5, sd = 2)
+
 # Put parameters that are grouped by disease into this data.table
 scenarios <- data.table(
   expand.grid(
     delay_group = list(data.table(
       delay = c("fast", "slow", "lft"),
       onset_to_isolation = c(
-        \(n) stats::rweibull(n = n, shape = 1.651524, scale = 4.287786),
-        \(n) stats::rweibull(n = n, shape = 2.305172, scale = 9.483875),
-        \(n) stats::rexp(n = n, rate = 0.5)
+        \(n) stats::rweibull(n = n, shape = fast$shape, scale = fast$scale),
+        \(n) stats::rweibull(n = n, shape = slow$shape, scale = slow$scale),
+        \(n) stats::rexp(n = n, rate = 1)
       )
     )),
     incubation_period_group = list(data.table(
@@ -77,7 +80,7 @@ scenarios[, scenario :=  1:.N]
 
 scenario_sims <- scenarios[, list(data = list(.SD)), by = scenario]
 
-n <- 1000
+n <- 100
 
 # Set up multicore if using see ?future::plan for details
 # Use the workers argument to control the number of cores used.
