@@ -103,8 +103,8 @@ delay_labels <- c(
   "H5N1" = "H5N1",
   "H1N1" = "H1N1",
   "H7N9" = "H7N9",
-  "slow" = "Slow",
-  "fast" = "Fast",
+  "slow" = "Slow PCR",
+  "fast" = "Fast PCR",
   "lft" = "LFT"
 )
 
@@ -127,7 +127,10 @@ median_controlled_outbreak_size_plot <- ggplot2::ggplot(
     limits = c(0, 5000)
   ) +
   ggplot2::theme_bw() +
-  ggplot2::theme(strip.background = ggplot2::element_blank())
+  ggplot2::theme(
+    strip.background = ggplot2::element_blank(),
+    strip.text = ggplot2::element_text(face = "bold", size = 12)
+  )
 
 ggplot2::ggsave(
   file.path("inst", "plots", "median_controlled_outbreak_size.png"),
