@@ -46,11 +46,6 @@ flu_data[, prop_ascertain := factor(prop_ascertain)]
 flu_data[, subtype := factor(subtype)]
 
 reproduction_number_low_presym_asym <- flu_data[
-   prop_presymptomatic == 0.01 & prop_asymptomatic == 0,
-  .(r0_community, prop_ascertain, quarantine, subtype, delay, median_r0)
-]
-
-reproduction_number_low_presym_asym <- flu_data[
   prop_presymptomatic == 0.01 & prop_asymptomatic == 0,
   .(r0_community, prop_ascertain, quarantine, subtype, delay, median_r0)
 ]
@@ -64,8 +59,8 @@ delay_labels <- c(
   "H5N1" = "H5N1",
   "H1N1" = "H1N1",
   "H7N9" = "H7N9",
-  "slow" = "Slow",
-  "fast" = "Fast",
+  "slow" = "Slow PCR",
+  "fast" = "Fast PCR",
   "lft" = "LFT"
 )
 
@@ -89,11 +84,11 @@ r0_low_presym_asym_plot <- ggplot2::ggplot(
     labeller = ggplot2::as_labeller(delay_labels)
   ) +
   ggplot2::scale_y_continuous(
-    name = "Median Rt",
+    name = expression("Median " * R[t]),
     limits = c(0, 3.5)
   ) +
   ggplot2::scale_x_continuous(
-    name = "Simulated community R0",
+    name = expression("Simulated community "* R[0]),
     limits = c(0, 3.5)
   ) +
   ggplot2::scale_color_brewer(palette = "Set1") +
@@ -135,11 +130,11 @@ r0_high_presym_asym_plot <- ggplot2::ggplot(
     labeller = ggplot2::as_labeller(delay_labels)
   ) +
   ggplot2::scale_y_continuous(
-    name = "Median Rt",
+    name = expression("Median " * R[t]),
     limits = c(0, 3.5)
   ) +
   ggplot2::scale_x_continuous(
-    name = "Simulated community R0",
+    name = expression("Simulated community " * R[0]),
     limits = c(0, 3.5)
   ) +
   ggplot2::scale_color_brewer(palette = "Set1") +
