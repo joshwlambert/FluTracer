@@ -98,8 +98,14 @@ ggplot2::ggplot(data = param_space) +
     y = covid_coords[["y"]],
     label = "SARS-CoV-2"
   ) +
-  ggplot2::scale_x_continuous(name = "Percentage of pre- or asymtomatic infections (%)", limits = c(0, 100)) +
-  ggplot2::scale_y_continuous(name = "Reproduction number (R)", limits = c(0, 15)) +
+  ggplot2::scale_x_continuous(
+    name = "Percentage of pre- or asymtomatic infections (%)",
+    limits = c(0, 100)
+  ) +
+  ggplot2::scale_y_continuous(
+    name = expression("Basic reproduction number (" * R[0] * ")"),
+    limits = c(0, 15)
+  ) +
   ggplot2::scale_fill_gradient2(low = "#ffffff", high = "darkgreen") +
   ggplot2::theme_bw() +
   ggplot2::theme(legend.position = "none") +
@@ -118,8 +124,14 @@ ggplot2::ggplot(param_space, ggplot2::aes(x = prop_asym, y = R, color = pathogen
     color = "red",
     fill = "red"
   ) +
-  ggplot2::scale_x_continuous(name = "Percentage of pre- or asymtomatic infections (%)", limits = c(0, 100)) +
-  ggplot2::scale_y_continuous(name = "Reproduction number (R)", limits = c(0, 15)) +
+  ggplot2::scale_x_continuous(
+    name = "Percentage of pre- or asymtomatic infections (%)",
+    limits = c(0, 100)
+  ) +
+  ggplot2::scale_y_continuous(
+    name = expression("Basic reproduction number (" * R[0] * ")"),
+    limits = c(0, 15)
+  ) +
   ggplot2::theme_bw()
 
 # deterministic plot
@@ -192,7 +204,7 @@ patho_param_space_plot <- ggplot2::ggplot() +
     limits = c(0, 100)
   ) +
   ggplot2::scale_y_continuous(
-    name = "Reproduction number (R)",
+    name = expression("Basic reproduction number (" * R[0] * ")"),
     limits = c(0, 10)
   ) +
   ggplot2::theme_bw()
