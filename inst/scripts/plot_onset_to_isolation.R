@@ -7,7 +7,7 @@ onset_to_isolation <- data.table(
   x = density_eval,
   Fast = dweibull(density_eval, shape = 1.651524, scale = 4.287786),
   Slow = dweibull(density_eval, shape = 2.305172, scale = 9.483875),
-  LFT = dexp(x = density_eval, rate = 0.5)
+  LFT = dexp(x = density_eval, rate = 1)
 )
 
 onset_to_isolation <- melt(
