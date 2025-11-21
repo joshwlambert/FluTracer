@@ -6,9 +6,9 @@ h5n1_results <- readRDS(file.path("inst", "extdata", "H5N1_simulations_no_Q.rds"
 h1n1_results <- readRDS(file.path("inst", "extdata", "H1N1_simulations_no_Q.rds"))
 h7n9_results <- readRDS(file.path("inst", "extdata", "H7N9_simulations_no_Q.rds"))
 
-h5n1_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 5000), by = scenario]
-h1n1_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 5000), by = scenario]
-h7n9_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 5000), by = scenario]
+h5n1_results[, pext := ringbp::extinct_prob(sims[[1]], extinction_week = 12), by = scenario]
+h1n1_results[, pext := ringbp::extinct_prob(sims[[1]], extinction_week = 12), by = scenario]
+h7n9_results[, pext := ringbp::extinct_prob(sims[[1]], extinction_week = 12), by = scenario]
 
 h5n1_data <- rbindlist(h5n1_results$data)
 h5n1_data[, `:=`(scenario = h5n1_results$scenario, pext = h5n1_results$pext)]
@@ -53,11 +53,11 @@ prop_outbreak_control_var_reproduction_number_plot <- ggplot2::ggplot(
     name = "Contacts traced (%)"
   ) +
   ggplot2::scale_y_continuous(
-    name = "Standard deviation between subtype\nsimulated outbreaks controlled (%)",
+    name = "Standard deviation of percentage simulated\noutbreaks controlled between subtypes",
   ) +
   ggplot2::scale_fill_brewer(palette = "RdBu", direction = -1) +
   ggplot2::labs(
-    fill = "Reproduction Number (R)"
+    fill = expression("Basic Reproduction Number (" * R[0] * ")")
   ) +
   ggplot2::guides(
     fill = ggplot2::guide_legend(

@@ -6,9 +6,9 @@ h5n1_results <- readRDS(file.path("inst", "extdata", "H5N1_simulations_no_Q.rds"
 h1n1_results <- readRDS(file.path("inst", "extdata", "H1N1_simulations_no_Q.rds"))
 h7n9_results <- readRDS(file.path("inst", "extdata", "H7N9_simulations_no_Q.rds"))
 
-h5n1_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 5000), by = scenario]
-h1n1_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 5000), by = scenario]
-h7n9_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 5000), by = scenario]
+h5n1_results[, pext := ringbp::extinct_prob(sims[[1]], extinction_week = 12), by = scenario]
+h1n1_results[, pext := ringbp::extinct_prob(sims[[1]], extinction_week = 12), by = scenario]
+h7n9_results[, pext := ringbp::extinct_prob(sims[[1]], extinction_week = 12), by = scenario]
 
 h5n1_data <- rbindlist(h5n1_results$data)
 h5n1_data[, `:=`(scenario = h5n1_results$scenario, pext = h5n1_results$pext)]
@@ -26,7 +26,7 @@ rm(h7n9_results)
 flu_data <- rbindlist(list(h5n1_data, h1n1_data, h7n9_data))
 
 prop_outbreak_control <- flu_data[
-  initial_cases == 20 & prop_presymptomatic == 0.15 & prop_asymptomatic == 0,
+  initial_cases == 20 & prop_presymptomatic == 0.15 & prop_asymptomatic == 0.1,
   .(prop_ascertain, r0_community, pext, subtype, delay)
 ]
 
@@ -40,8 +40,8 @@ prop_outbreak_control[, delay := as.factor(delay)]
 prop_outbreak_control[, delay := factor(delay, levels = c("slow", "fast", "lft"))]
 
 delay_labels <- c(
-  "slow" = "(A)          Slow",
-  "fast" = "(B)          Fast",
+  "slow" = "(A)       Slow PCR",
+  "fast" = "(B)       Fast PCR",
   "lft" = "(C)          LFT"
 )
 
@@ -82,8 +82,8 @@ prop_outbreak_control_plot <- ggplot2::ggplot(data = prop_outbreak_control) +
   ggplot2::scale_shape_manual(values = c(21, 22, 24)) +
   ggplot2::scale_linetype_manual(values = c(1, 1, 1)) +
   ggplot2::labs(
-    colour = "Reproduction Number (R)",
-    fill = "Reproduction Number (R)",
+    colour = expression("Basic Reproduction Number (" * R[0] * ")"),
+    fill = expression("Basic Reproduction Number (" * R[0] * ")"),
     shape = "Pathogen Subtype",
     linetype = "Pathogen Subtype"
   ) +
@@ -97,7 +97,7 @@ prop_outbreak_control_plot <- ggplot2::ggplot(data = prop_outbreak_control) +
     legend.position = "bottom",
     legend.box="vertical",
     strip.background = ggplot2::element_blank(),
-    strip.text = ggplot2::element_text(face = "bold", size = 12, hjust = 0)
+    strip.text = ggplot2::element_text(size = 12, hjust = 0)
   )
 
 ggplot2::ggsave(
@@ -105,7 +105,7 @@ ggplot2::ggsave(
   plot = prop_outbreak_control_plot,
   device = "png",
   width = 150,
-  height = 150,
+  height = 125,
   units = "mm",
   dpi = 300
 )

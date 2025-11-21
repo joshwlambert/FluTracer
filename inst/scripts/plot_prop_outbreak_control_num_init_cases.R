@@ -6,9 +6,9 @@ h5n1_results <- readRDS(file.path("inst", "extdata", "H5N1_simulations_no_Q.rds"
 h1n1_results <- readRDS(file.path("inst", "extdata", "H1N1_simulations_no_Q.rds"))
 h7n9_results <- readRDS(file.path("inst", "extdata", "H7N9_simulations_no_Q.rds"))
 
-h5n1_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 5000), by = scenario]
-h1n1_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 5000), by = scenario]
-h7n9_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 5000), by = scenario]
+h5n1_results[, pext := ringbp::extinct_prob(sims[[1]], extinction_week = 12), by = scenario]
+h1n1_results[, pext := ringbp::extinct_prob(sims[[1]], extinction_week = 12), by = scenario]
+h7n9_results[, pext := ringbp::extinct_prob(sims[[1]], extinction_week = 12), by = scenario]
 
 h5n1_data <- rbindlist(h5n1_results$data)
 h5n1_data[, `:=`(scenario = h5n1_results$scenario, pext = h5n1_results$pext)]
@@ -26,7 +26,7 @@ rm(h7n9_results)
 flu_data <- rbindlist(list(h5n1_data, h1n1_data, h7n9_data))
 
 prop_outbreak_control <- flu_data[
-  prop_presymptomatic == 0.15 & prop_asymptomatic == 0 & delay == "fast",
+  prop_presymptomatic == 0.15 & prop_asymptomatic == 0.1 & delay == "fast",
   .(prop_ascertain, r0_community, initial_cases, pext, subtype)
 ]
 

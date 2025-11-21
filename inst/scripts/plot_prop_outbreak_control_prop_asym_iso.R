@@ -6,9 +6,9 @@ h5n1_results <- readRDS(file.path("inst", "extdata", "h5n1_simulations_no_Q.rds"
 h1n1_results <- readRDS(file.path("inst", "extdata", "h1n1_simulations_no_Q.rds"))
 h7n9_results <- readRDS(file.path("inst", "extdata", "h7n9_simulations_no_Q.rds"))
 
-h5n1_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 5000), by = scenario]
-h1n1_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 5000), by = scenario]
-h7n9_results[, pext := ringbp::extinct_prob(sims[[1]], cap_cases = 5000), by = scenario]
+h5n1_results[, pext := ringbp::extinct_prob(sims[[1]], extinction_week = 12), by = scenario]
+h1n1_results[, pext := ringbp::extinct_prob(sims[[1]], extinction_week = 12), by = scenario]
+h7n9_results[, pext := ringbp::extinct_prob(sims[[1]], extinction_week = 12), by = scenario]
 
 h5n1_data <- rbindlist(h5n1_results$data)
 h5n1_data[, `:=`(scenario = h5n1_results$scenario, pext = h5n1_results$pext)]
@@ -40,8 +40,8 @@ prop_outbreak_control[, delay := as.factor(delay)]
 prop_outbreak_control[, delay := factor(delay, levels = c("slow", "fast", "lft"))]
 
 delay_labels <- c(
-  "slow" = "Slow",
-  "fast" = "Fast",
+  "slow" = "Slow PCR",
+  "fast" = "Fast PCR",
   "lft" = "LFT",
   "0" = "0% asymptomatic",
   "0.1" = "10% asymptomatic",
@@ -85,8 +85,8 @@ prop_outbreak_control_prop_asym_iso <- ggplot2::ggplot(data = prop_outbreak_cont
   ggplot2::scale_shape_manual(values = c(21, 22, 24)) +
   ggplot2::scale_linetype_manual(values = c(1, 1, 1)) +
   ggplot2::labs(
-    colour = "Reproduction Number (R)",
-    fill = "Reproduction Number (R)",
+    colour = expression("Basic Reproduction Number (" * R[0] * ")"),
+    fill = expression("Basic Reproduction Number (" * R[0] * ")"),
     shape = "Pathogen Subtype",
     linetype = "Pathogen Subtype"
   ) +
