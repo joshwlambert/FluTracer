@@ -68,8 +68,8 @@ delay_labels <- c(
   "H5N1" = "H5N1",
   "H1N1" = "H1N1",
   "H7N9" = "H7N9",
-  "slow" = "Slow",
-  "fast" = "Fast",
+  "slow" = "Slow PCR",
+  "fast" = "Fast PCR",
   "lft" = "LFT"
 )
 
@@ -84,13 +84,16 @@ max_weekly_cases_plot <- ggplot2::ggplot(data = max_weekly_cases) +
     ggplot2::vars(delay), ggplot2::vars(subtype),
     labeller = ggplot2::as_labeller(delay_labels)
   ) +
-  ggplot2::scale_x_discrete(name = "Simulated community R0") +
+  ggplot2::scale_x_discrete(name = expression("Simulated community " * R[0])) +
   ggplot2::scale_y_continuous(
     name = "Median maximum weekly cases",
     expand = c(0.1, 0.1)
   ) +
   ggplot2::theme_bw() +
-  ggplot2::theme(strip.background = ggplot2::element_blank())
+  ggplot2::theme(
+    strip.background = ggplot2::element_blank(),
+    strip.text = ggplot2::element_text(face = "bold", size = 12)
+  )
 
 
 ggplot2::ggsave(
