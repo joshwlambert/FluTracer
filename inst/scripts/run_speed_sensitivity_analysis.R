@@ -44,7 +44,7 @@ scenarios <- data.table(
     prop_presymptomatic = c(0.15),
     prop_asymptomatic = c(0.1),
     prop_ascertain = 0.8,
-    initial_cases = 5,
+    initial_cases = 20,
     quarantine = FALSE,
     cap_max_days = 140,
     cap_cases = 5000
