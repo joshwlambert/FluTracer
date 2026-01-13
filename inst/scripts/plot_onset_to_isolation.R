@@ -3,10 +3,13 @@ library(ggplot2)
 
 density_eval <- seq(0, 25, 0.1)
 
+fast <-  epiparameter::convert_summary_stats_to_params("weibull", mean = 3, sd = 2)
+slow <- epiparameter::convert_summary_stats_to_params("weibull", mean = 5, sd = 2)
+
 onset_to_isolation <- data.table(
   x = density_eval,
-  Fast = dweibull(density_eval, shape = 1.651524, scale = 4.287786),
-  Slow = dweibull(density_eval, shape = 2.305172, scale = 9.483875),
+  Fast = dweibull(density_eval, shape = fast$shape, scale = fast$scale),
+  Slow = dweibull(density_eval, shape = slow$shape, scale = slow$scale),
   LFT = dexp(x = density_eval, rate = 1)
 )
 
