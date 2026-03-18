@@ -71,7 +71,7 @@ scenarios <- data.table(
     disp_community = 0.8,
     disp_isolated = 1,
     prop_presymptomatic = c(0.01, 0.15, 0.3),
-    prop_asymptomatic = c(0, 0.1, 0.3),
+    prop_asymptomatic = c(0, 0.16, 0.42),
     prop_ascertain = seq(0, 1, 0.2),
     initial_cases = c(5, 20, 40),
     quarantine = c(FALSE, TRUE),
