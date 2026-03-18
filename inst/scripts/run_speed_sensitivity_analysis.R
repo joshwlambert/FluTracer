@@ -71,14 +71,14 @@ scenarios <- merge(
 
 scenarios[, scenario :=  1:.N]
 
-n <- 1000
+n_sim <- 1000
 
 # try to find the optimal value of test_sensitivity
 # define an objective function for optimization
-objective_fn <- function(test_sensitivity, baseline_ext_prob) {
+objective_fn <- function(x, test_sensitivity, baseline_ext_prob, n_sim) {
   message("Running simulations with test sensitivity: ", test_sensitivity)
   lft <- scenario_sim(
-    n = n,
+    n = n_sim,
     initial_cases = x$initial_cases,
     offspring = offspring_opts(
       community = \(n) rnbinom(n = n, mu = x$r0_community, size = x$disp_community),
@@ -99,7 +99,7 @@ objective_fn <- function(test_sensitivity, baseline_ext_prob) {
     ),
     sim = sim_opts(cap_max_days = x$cap_max_days, cap_cases = x$cap_cases)
   )
-  ext_prob <- extinct_prob(lft)
+  ext_prob <- extinct_prob(lft, extinction_week = 12)
 
   # The optimizer minimizes this difference
   abs(ext_prob - baseline_ext_prob)
@@ -114,7 +114,7 @@ for (i in seq_along(baseline_extinct_prob)) {
   x <- scenarios[i, ]
 
   sim <- scenario_sim(
-    n = n,
+    n = n_sim,
     initial_cases = x$initial_cases,
     offspring = offspring_opts(
       community = \(n) rnbinom(n = n, mu = x$r0_community, size = x$disp_community),
@@ -133,7 +133,7 @@ for (i in seq_along(baseline_extinct_prob)) {
     sim = sim_opts(cap_max_days = x$cap_max_days, cap_cases = x$cap_cases)
   )
 
-  baseline_extinct_prob[i] <- extinct_prob(sim)
+  baseline_extinct_prob[i] <- extinct_prob(sim, extinction_week = 12)
   cat(
     "Baseline extinction probability for", scenarios$subtype[i], "&",
     scenarios$delay[i], ":", baseline_extinct_prob[[i]], "\n"
@@ -143,7 +143,9 @@ for (i in seq_along(baseline_extinct_prob)) {
   opt_result[[i]] <- optimize(
     objective_fn,
     interval = c(0, 1),
-    baseline_ext_prob = baseline_extinct_prob[i]
+    x = x,
+    baseline_ext_prob = baseline_extinct_prob[i],
+    n_sim = n_sim
   )
 }
 
@@ -153,7 +155,8 @@ lft_sensitivity <- vapply(opt_result, `[[`, FUN.VALUE = numeric(1), "minimum")
 extinction_prob_delta <- vapply(opt_result, `[[`, FUN.VALUE = numeric(1), "objective")
 
 scenarios[
-  , c("lft_sensitivity", "extinction_prob_delta") := list(lft_sensitivity, extinction_prob_delta)
+  , c("lft_sensitivity", "extinction_prob_delta", "baseline_extinct_prob") :=
+    list(lft_sensitivity, extinction_prob_delta, baseline_extinct_prob)
 ]
 
 cat("Saving results... \n")
